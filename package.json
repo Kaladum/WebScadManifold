@@ -1,0 +1,15 @@
+{
+  "name": "web-scad-manifold",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kaladum",
+  "license": "MIT",
+  "description": "",
+  "workspaces": [
+    "app",
+    "packages/web-scad-manifold-lib"
+  ]
+}
