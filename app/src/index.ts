@@ -1,7 +1,12 @@
-import { Mesh } from "web-scad-manifold-lib";
 import { buildDirectory } from "./builder";
 import { PersistentDirectoryHandler } from "./db";
 import { ResultRenderer } from "./rendering";
+
+// @ts-ignore
+import runWorkerUrl from "./runtime/worker?url&worker&no-inline";
+import { wrap } from "comlink";
+import { JsRunnerWorker } from "./runtime/worker";
+import { WebScadMainResult } from "web-scad-manifold-lib/common";
 
 async function main() {
     const persistentDirHandler = await PersistentDirectoryHandler.init();
@@ -19,7 +24,7 @@ async function main() {
         try {
             const dir = await window.showDirectoryPicker();
             await persistentDirHandler.store(dir);
-            loadForDir(dir);
+            await loadForDir(dir);
         } catch (e) {
             console.error(e);//TODO
         }
@@ -28,27 +33,28 @@ async function main() {
 }
 
 async function loadForDir(dir: FileSystemDirectoryHandle) {
-    console.log(dir);
-
     const build = await buildDirectory(dir);
     console.log(build);
 
     if (build.ok) {
-        const fileContent = build.content;
-        const url = URL.createObjectURL(new Blob([build.blob], { type: "application/javascript" }));
-        //const url = "data:application/javascript;base64," + btoa(fileContent);
-
-        const result = await import(/* @vite-ignore */ url);
-        console.log(result);
-
-        const mainResult = await result.main();
-        console.log(mainResult);
-
-        render(mainResult);
+        const mainResult = await execute(build.blob);
+        console.log("Main result", mainResult);
+        if (mainResult !== undefined) {
+            render(mainResult);
+        }
     }
 }
 
-function render(result: Mesh) {
+async function execute(content: Uint8Array) {
+    const rawWorker = new Worker(runWorkerUrl, { type: "module" });
+    const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
+
+    const runtime = await jsRunnerWorker.create(content);
+
+    return await runtime.run();
+}
+
+function render(result: WebScadMainResult) {
     const renderer = new ResultRenderer();
     document.body.append(renderer.display);
 
