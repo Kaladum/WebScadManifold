@@ -11,12 +11,14 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "comlink": "^4.4.2",
     "esbuild-wasm": "^0.25.1",
     "idb": "^8.0.2",
     "path-browserify-esm": "^1.0.6",
     "three": "^0.174.0",
     "typescript": "^5.8.2",
-    "web-scad-manifold-lib": "*"
+    "web-scad-manifold-lib": "*",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/three": "^0.174.0",
