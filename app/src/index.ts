@@ -1,12 +1,6 @@
-import { buildDirectory } from "./builder";
 import { PersistentDirectoryHandler } from "./db";
-import { ResultRenderer } from "./rendering";
 
-// @ts-ignore
-import runWorkerUrl from "./runtime/worker?url&worker&no-inline";
-import { wrap } from "comlink";
-import { JsRunnerWorker } from "./runtime/worker";
-import { WebScadMainResult } from "web-scad-manifold-lib/common";
+import { runModelUi } from "./modelUi";
 
 async function main() {
     const persistentDirHandler = await PersistentDirectoryHandler.init();
@@ -33,32 +27,24 @@ async function main() {
 }
 
 async function loadForDir(dir: FileSystemDirectoryHandle) {
-    const build = await buildDirectory(dir);
-    console.log(build);
-
-    if (build.ok) {
-        const mainResult = await execute(build.blob);
-        console.log("Main result", mainResult);
-        if (mainResult !== undefined) {
-            render(mainResult);
-        }
-    }
+    await runModelUi(dir);
 }
+// async function loadForDir(dir: FileSystemDirectoryHandle) {
+//     const build = await buildDirectory(dir);
+//     console.log(build);
 
-async function execute(content: Uint8Array) {
-    const rawWorker = new Worker(runWorkerUrl, { type: "module" });
-    const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
+//     const mainResult = await execute(build.contents);
+//     console.log("Main result", mainResult);
+//     if (mainResult !== undefined) {
+//         render(mainResult);
+//     }
+// }
 
-    const runtime = await jsRunnerWorker.create(content);
+// function render(result: WebScadMainResult) {
+//     const renderer = new ResultRenderer();
+//     document.body.append(renderer.canvas);
 
-    return await runtime.run();
-}
-
-function render(result: WebScadMainResult) {
-    const renderer = new ResultRenderer();
-    document.body.append(renderer.display);
-
-    renderer.setContent(result);
-}
+//     renderer.setContent(result);
+// }
 
 main().catch(console.error);

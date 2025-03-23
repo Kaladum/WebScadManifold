@@ -1,4 +1,4 @@
-import { build, initialize } from "esbuild-wasm";
+import { build, initialize, OutputFile } from "esbuild-wasm";
 import { createDirectoryHandleResolverPlugin, createStaticResolverPlugin, externalResolverPlugin } from "./resolver";
 
 //@ts-ignore
@@ -8,7 +8,7 @@ await initialize({
     wasmURL: esbuildWasmUrl,
 });
 
-export async function buildDirectory(dir: FileSystemDirectoryHandle): Promise<BuildResult> {
+export async function buildDirectory(dir: FileSystemDirectoryHandle): Promise<OutputFile> {
     const dirResolver = createDirectoryHandleResolverPlugin(dir);
 
     const result = await build({
@@ -27,18 +27,17 @@ export async function buildDirectory(dir: FileSystemDirectoryHandle): Promise<Bu
     console.log(result);
 
     if (result.errors.length > 0) {
-        return { ok: false, errorMessages: result.errors.map(v => v.text) };
+        throw new Error(result.errors.map(v => v.text).join("\n"));
     }
 
     if (result.outputFiles.length === 0) {
-        return { ok: false, errorMessages: ["No output files"] };
+        throw new Error("No output files");
     }
+
     if (result.outputFiles.length > 1) {
-        return { ok: false, errorMessages: ["To many output files"] };
+        throw new Error("Too many output files");
     }
 
     const file = result.outputFiles[0];
-    return { ok: true, content: file.text, blob: file.contents };
+    return file;
 }
-
-export type BuildResult = { ok: true, content: string, blob: Uint8Array } | { ok: false, errorMessages: string[] };
