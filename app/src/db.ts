@@ -2,12 +2,14 @@ import { openDB, DBSchema, IDBPDatabase } from "idb";
 
 interface DirectoryHandleDb extends DBSchema {
     directoryHandles: {
-        value: {
-            name: string;
-            handle: FileSystemDirectoryHandle;
-        };
-        key: number;
+        key: number,
+        value: StoredDirectoryHandle;
     };
+}
+export interface StoredDirectoryHandle {
+    readonly id: number,
+    readonly lastUsed: Date,
+    readonly handle: FileSystemDirectoryHandle,
 }
 
 const DB_Name = "persistent-directory-db";
@@ -20,7 +22,7 @@ export class PersistentDirectoryHandler {
                 for (const name of db.objectStoreNames) {
                     db.deleteObjectStore(name);
                 }
-                db.createObjectStore("directoryHandles", { autoIncrement: true });
+                db.createObjectStore("directoryHandles", { autoIncrement: true, keyPath: "id" });
             },
         });
         return new PersistentDirectoryHandler(db);
@@ -28,19 +30,28 @@ export class PersistentDirectoryHandler {
 
     private constructor(private readonly db: IDBPDatabase<DirectoryHandleDb>) { }
 
-    public async store(handle: FileSystemDirectoryHandle) {
-        const tx = this.db.transaction("directoryHandles", "readwrite");
-        await tx.store.clear();
-        await tx.store.add({ name: handle.name, handle });
-        tx.commit();
+    public async add(handle: FileSystemDirectoryHandle) {
+        const newEntry: Omit<StoredDirectoryHandle, "id"> = {
+            handle,
+            lastUsed: new Date(),
+        }
+        await this.db.add("directoryHandles", newEntry as unknown as StoredDirectoryHandle);//This type cast hack is necessary because the ID will be auto incremented
+    }
+
+    public async delete(id: number) {
+        await this.db.delete("directoryHandles", id);
     }
 
     public async clear() {
         await this.db.clear("directoryHandles");
     }
 
-    public async load() {
-        const entry = await this.db.get("directoryHandles", IDBKeyRange.lowerBound(-1));
-        return entry?.handle;
+    public async getAll(): Promise<StoredDirectoryHandle[]> {
+        const entries = await this.db.getAll("directoryHandles");
+        return entries;
+    }
+
+    public async getById(id: number): Promise<StoredDirectoryHandle | undefined> {
+        return this.db.get("directoryHandles", id);
     }
 }

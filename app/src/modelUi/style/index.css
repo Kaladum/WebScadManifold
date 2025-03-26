@@ -11,8 +11,6 @@ body {
     min-width: 100vw;
     position: relative;
 
-    /* display: grid; */
-
     overflow: hidden;
 
     .render-container {
@@ -20,5 +18,35 @@ body {
         height: 100%;
 
         width: 100%;
+    }
+
+    .controls {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: grid;
+
+        pointer-events: none;
+
+        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-rows: 1fr 3fr 1fr;
+
+        grid-template-areas:
+            "header header header"
+            "objects main params"
+            "export main empty";
+
+        .export {
+            padding: 0.5em;
+            grid-area: export;
+
+            display: flex;
+            justify-content: start;
+            align-items: end;
+
+            button {
+                pointer-events: initial;
+            }
+        }
     }
 }

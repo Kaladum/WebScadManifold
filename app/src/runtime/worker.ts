@@ -1,5 +1,5 @@
 import { expose, proxy } from "comlink";
-import { WebScadModule, WebScadObject } from "web-scad-manifold-lib/common";
+import { WebScadModule, WebScadObject } from "web-scad-manifold-lib";
 import { WebScadModuleSchema, WebScadResultSchema } from "./typeCheck";
 
 export class JsRunnerWorker {

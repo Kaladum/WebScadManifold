@@ -1,0 +1,18 @@
+.project-selection {
+    display: flex;
+    width: 40em;
+
+    padding: 1em;
+
+    flex-direction: column;
+
+    align-items: stretch;
+    justify-content: stretch;
+
+    .directory-handle {
+        padding: 1em;
+        height: 7em;
+        border: 0.1em solid black;
+        border-radius: 0.5em;
+    }
+}

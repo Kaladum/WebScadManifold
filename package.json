@@ -10,6 +10,10 @@
   "description": "",
   "workspaces": [
     "app",
-    "packages/web-scad-manifold-lib"
-  ]
+    "packages/web-scad-manifold-lib",
+    "packages/3mf-lib"
+  ],
+  "dependencies": {
+    "fast-xml-parser": "^5.0.9"
+  }
 }
