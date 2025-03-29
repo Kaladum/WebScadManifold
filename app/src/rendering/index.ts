@@ -47,15 +47,23 @@ export class ResultRenderer {
     public setContent(element: WebScadObject) {
         this.scene.clear();
 
-        const material = new MeshPhongMaterial({
-            color: 0x00ff00,
-            flatShading: true,
-        });
-        const geometry = new BufferGeometry();
-        geometry.setAttribute("position", new BufferAttribute(element.vertices, 3));
-        geometry.setIndex(Array.from(element.indices));
-        geometry.computeVertexNormals();
-        const mesh = new Mesh(geometry, material);
+        for (const inputMesh of element.meshes) {
+            let color = new Color(0.56, 0.66, 0.2);
+            if (inputMesh.color !== undefined) {
+                color = new Color(inputMesh.color[0], inputMesh.color[1], inputMesh.color[2]);
+            }
+            const material = new MeshPhongMaterial({
+                color,
+                flatShading: true,
+            });
+            const geometry = new BufferGeometry();
+            geometry.setAttribute("position", new BufferAttribute(inputMesh.vertices, 3));
+            geometry.setIndex(Array.from(inputMesh.indices));
+            geometry.computeVertexNormals();
+            const mesh = new Mesh(geometry, material);
+            this.scene.add(mesh);
+        }
+
 
         this.scene.add(new AmbientLight(0xffffff, 0.1));
 
@@ -71,6 +79,5 @@ export class ResultRenderer {
             this.scene.add(directionalLight);
         }
 
-        this.scene.add(mesh);
     }
 }

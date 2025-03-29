@@ -7,11 +7,15 @@ export async function export3mf(model: WebScadMainResult, thumbnail?: HTMLCanvas
     file.header.title = "ThisIsATest";
     file.header.application = "web-scad-manifold";
 
-    file.meshes.push(
-        new Mesh3mf(1, model.vertices, model.indices)
-    );
+    for (const [i, mesh] of model.meshes.entries()) {
+        const id = i + 1;
+        file.meshes.push(
+            new Mesh3mf(id, mesh.vertices, mesh.indices)
+        );
 
-    file.items.push(new Child3mf(1));
+        file.items.push(new Child3mf(id));
+    }
+
 
     if (thumbnail !== undefined) {
         file.thumbnail = await canvasToPng(thumbnail);

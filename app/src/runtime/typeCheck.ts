@@ -10,13 +10,17 @@ export const WebScadColor = z.union([
     z.tuple([WebScadColorValue, WebScadColorValue, WebScadColorValue, WebScadColorValue]),
 ]);
 
-export const WebScadObjectSchema = z.object({
+
+export const WebScadMeshSchema = z.object({
     type: z.literal("mesh"),
     vertices: z.instanceof(Float32Array),
     indices: z.instanceof(Uint32Array),
     color: WebScadColor.optional(),
 });
 
+export const WebScadObjectSchema = z.object({
+    meshes: WebScadMeshSchema.array()
+});
 
 export const WebScadResultSchema = z.union([//Union means or
     WebScadObjectSchema,//TODO  
