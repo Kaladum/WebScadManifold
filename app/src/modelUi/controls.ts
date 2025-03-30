@@ -2,30 +2,25 @@ import { export3mf } from "../export/3mf";
 import { downloadBlob } from "../export/download";
 import { ResultRenderer } from "../rendering";
 import { ModelCalculationStateManager, ModelStateReady } from "../state";
-import { cButton } from "../utils/jsml";
+import { cButton, cDiv } from "../utils/jsml";
 
 export class ModelUiControls {
-    public readonly container = document.createElement("div");
-
-    private readonly exportControls = document.createElement("div");
-    private readonly exportButton = cButton({
-        text: "Export 3mf",
-        onClickHandled: () => this.export(),
+    public readonly container = cDiv({
+        class: "controls",
+        children: [
+            cDiv({
+                class: "export",
+                children: [
+                    cButton({ text: "Export 3mf", onClickHandled: () => this.export(), }),
+                ],
+            }),
+        ],
     });
 
     public constructor(
         private readonly stateManager: ModelCalculationStateManager,
         private readonly renderer: ResultRenderer,
     ) {
-        this.container.classList.add("controls");
-        this.exportControls.classList.add("export");
-
-        this.exportControls.append(this.exportButton);
-
-
-        this.container.append(
-            this.exportControls,
-        );
     }
 
     private async export() {
