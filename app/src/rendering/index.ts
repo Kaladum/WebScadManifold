@@ -1,7 +1,8 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3 } from "three";
-import { WebScadObject } from "web-scad-manifold-lib";
+import { WebScadMainResult } from "web-scad-manifold-lib";
 
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { iterateResultRecursive } from "../utils/multiObject";
 
 Object3D.DEFAULT_UP = new Vector3(0, 0, 1);
 
@@ -44,26 +45,27 @@ export class ResultRenderer {
         this.renderer.setAnimationLoop(animate);
     }
 
-    public setContent(element: WebScadObject) {
+    public setContent(result: WebScadMainResult) {
         this.scene.clear();
 
-        for (const inputMesh of element.meshes) {
-            let color = new Color(0.56, 0.66, 0.2);
-            if (inputMesh.color !== undefined) {
-                color = new Color(inputMesh.color[0], inputMesh.color[1], inputMesh.color[2]);
+        for (const [obj, _] of iterateResultRecursive(result)) {
+            for (const inputMesh of obj.meshes) {
+                let color = new Color(0.56, 0.66, 0.2);
+                if (inputMesh.color !== undefined) {
+                    color = new Color(inputMesh.color[0], inputMesh.color[1], inputMesh.color[2]);
+                }
+                const material = new MeshPhongMaterial({
+                    color,
+                    flatShading: true,
+                });
+                const geometry = new BufferGeometry();
+                geometry.setAttribute("position", new BufferAttribute(inputMesh.vertices, 3));
+                geometry.setIndex(Array.from(inputMesh.indices));
+                geometry.computeVertexNormals();
+                const mesh = new Mesh(geometry, material);
+                this.scene.add(mesh);
             }
-            const material = new MeshPhongMaterial({
-                color,
-                flatShading: true,
-            });
-            const geometry = new BufferGeometry();
-            geometry.setAttribute("position", new BufferAttribute(inputMesh.vertices, 3));
-            geometry.setIndex(Array.from(inputMesh.indices));
-            geometry.computeVertexNormals();
-            const mesh = new Mesh(geometry, material);
-            this.scene.add(mesh);
         }
-
 
         this.scene.add(new AmbientLight(0xffffff, 0.1));
 

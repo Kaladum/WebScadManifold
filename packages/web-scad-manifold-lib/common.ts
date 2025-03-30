@@ -4,9 +4,16 @@ export interface WebScadModule {
 
 export type WebScadMain = () => WebScadMainResult | Promise<WebScadMainResult | undefined> | undefined;
 
-export type WebScadMainResult = WebScadObject;
+
+export type WebScadMainResult = WebScadObjectMulti;
+
+export type WebScadObjectMulti = WebScadObject | readonly WebScadMainResult[] | WebScadMainResultMultiObject;
+
+interface WebScadMainResultMultiObject extends Readonly<Record<string, WebScadMainResult>> { }
+
 
 export interface WebScadObject {
+    readonly type: "object",
     readonly meshes: readonly WebScadMesh[];
 }
 
