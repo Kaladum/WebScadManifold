@@ -68,9 +68,9 @@ export class FpCameraControl {
         });
         el.addEventListener("wheel", e => {
             if (e.deltaY > 0) {
-                this.state.unitsPerSecond /= 1.1;
+                this.state.unitsPerSecond /= 1.2;
             } else if (e.deltaY < 0) {
-                this.state.unitsPerSecond *= 1.1;
+                this.state.unitsPerSecond *= 1.2;
             }
         })
         window.addEventListener("mousemove", e => {
