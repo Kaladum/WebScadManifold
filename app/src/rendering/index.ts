@@ -3,6 +3,7 @@ import { WebScadMainResult } from "web-scad-manifold-lib";
 
 import { FpCameraControl } from "./camera";
 import { iterateResultRecursive } from "../utils/multiObject";
+import { cDiv } from "../utils/jsml";
 
 Object3D.DEFAULT_UP = new Vector3(0, 0, 1);
 
@@ -12,16 +13,16 @@ export class ResultRenderer {
     });
     public readonly canvas = this.renderer.domElement;
     private readonly scene = new Scene();
-    public readonly container = document.createElement("div");
+    public readonly container = cDiv({
+        class: "render-container",
+        children: [this.canvas],
+    });
     private readonly camera = new PerspectiveCamera(75, 1, 0.1, 10_000);
     private readonly controls = new FpCameraControl(this.canvas, this.camera);
 
     private readonly modelGroup = new Group();
 
     public constructor() {
-        this.container.classList.add("render-container");
-        this.container.append(this.canvas);
-
         this.scene.background = new Color(0xffffff);
 
         const animate = () => {
