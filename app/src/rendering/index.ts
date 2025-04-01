@@ -1,7 +1,7 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3 } from "three";
 import { WebScadMainResult } from "web-scad-manifold-lib";
 
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { FpCameraControl } from "./camera";
 import { iterateResultRecursive } from "../utils/multiObject";
 
 Object3D.DEFAULT_UP = new Vector3(0, 0, 1);
@@ -14,7 +14,7 @@ export class ResultRenderer {
     private readonly scene = new Scene();
     public readonly container = document.createElement("div");
     private readonly camera = new PerspectiveCamera(75, 1, 0.1, 10_000);
-    private readonly controls = new FlyControls(this.camera, this.container);
+    private readonly controls = new FpCameraControl(this.canvas, this.camera);
 
     public constructor() {
         this.container.classList.add("render-container");
@@ -22,19 +22,8 @@ export class ResultRenderer {
 
         this.scene.background = new Color(0xffffff);
 
-        this.camera.position.x = 200;
-        this.camera.position.y = 0;
-        this.camera.position.z = 0;
-
-        this.camera.lookAt(0, 0, 0);
-
-        this.controls.movementSpeed = 200;
-        this.controls.rollSpeed = Math.PI / 2;
-        this.controls.autoForward = false;
-        this.controls.dragToLook = true;
-
         const animate = () => {
-            this.controls.update(0.01);
+            this.controls.animate();
             const size = this.container.getBoundingClientRect();
             this.renderer.setSize(size.width, size.height);
             this.camera.aspect = size.width / size.height;
