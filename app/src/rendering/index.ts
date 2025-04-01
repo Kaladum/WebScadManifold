@@ -1,4 +1,4 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3 } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3, Group } from "three";
 import { WebScadMainResult } from "web-scad-manifold-lib";
 
 import { FpCameraControl } from "./camera";
@@ -16,6 +16,8 @@ export class ResultRenderer {
     private readonly camera = new PerspectiveCamera(75, 1, 0.1, 10_000);
     private readonly controls = new FpCameraControl(this.canvas, this.camera);
 
+    private readonly modelGroup = new Group();
+
     public constructor() {
         this.container.classList.add("render-container");
         this.container.append(this.canvas);
@@ -32,10 +34,24 @@ export class ResultRenderer {
         }
 
         this.renderer.setAnimationLoop(animate);
+
+        this.scene.add(this.modelGroup);
+        this.scene.add(new AmbientLight(0xffffff, 0.1));
+        {
+            const directionalLight = new DirectionalLight(0xffffff, 0.6);
+            directionalLight.position.set(100, 100, 100);
+            this.scene.add(directionalLight);
+        }
+
+        {
+            const directionalLight = new DirectionalLight(0xffffff, 0.6);
+            directionalLight.position.set(-70, 50, -20);
+            this.scene.add(directionalLight);
+        }
     }
 
     public setContent(result: WebScadMainResult) {
-        this.scene.clear();
+        this.modelGroup.clear();
 
         for (const [obj, _] of iterateResultRecursive(result)) {
             for (const inputMesh of obj.meshes) {
@@ -52,23 +68,8 @@ export class ResultRenderer {
                 geometry.setIndex(Array.from(inputMesh.indices));
                 geometry.computeVertexNormals();
                 const mesh = new Mesh(geometry, material);
-                this.scene.add(mesh);
+                this.modelGroup.add(mesh);
             }
         }
-
-        this.scene.add(new AmbientLight(0xffffff, 0.1));
-
-        {
-            const directionalLight = new DirectionalLight(0xffffff, 0.6);
-            directionalLight.position.set(100, 100, 100);
-            this.scene.add(directionalLight);
-        }
-
-        {
-            const directionalLight = new DirectionalLight(0xffffff, 0.6);
-            directionalLight.position.set(-70, 50, -20);
-            this.scene.add(directionalLight);
-        }
-
     }
 }
