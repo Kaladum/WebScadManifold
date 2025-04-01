@@ -50,10 +50,21 @@ export class FpCameraControl {
             this.keyManager.onRelease(e.key);
         });
         el.addEventListener("mousedown", e => {
-            this.lastDragPosition = [e.clientX, e.clientY];
+            if (e.button === 0) {
+                this.lastDragPosition = [e.clientX, e.clientY];
+            }
+            if (e.button === 1) {
+                if (document.pointerLockElement === el) {
+                    document.exitPointerLock();
+                } else {
+                    el.requestPointerLock();
+                }
+            }
         });
         window.addEventListener("mouseup", e => {
-            this.lastDragPosition = undefined;
+            if (e.button === 0) {
+                this.lastDragPosition = undefined;
+            }
         });
         el.addEventListener("wheel", e => {
             if (e.deltaY > 0) {
@@ -63,13 +74,18 @@ export class FpCameraControl {
             }
         })
         window.addEventListener("mousemove", e => {
-            if (e.button !== 0) return;
             if (this.lastDragPosition !== undefined) {
-                const currentPosition: [number, number] = [e.clientX, e.clientY];
+                const currentPosition: [number, number] = [e.clientX, e.clientY];//I could use movementX/Y here but it feels less natural
                 const dx = currentPosition[0] - this.lastDragPosition[0];
                 const dy = currentPosition[1] - this.lastDragPosition[1];
                 this.state.rotate(-dx * radPerPixel, -dy * radPerPixel);
                 this.lastDragPosition = currentPosition;
+            }
+
+            if (document.pointerLockElement === el) {
+                const dx = e.movementX;
+                const dy = e.movementY;
+                this.state.rotate(-dx * radPerPixel, -dy * radPerPixel);
             }
         });
     }
