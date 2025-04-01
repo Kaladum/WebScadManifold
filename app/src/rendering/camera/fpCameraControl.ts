@@ -23,7 +23,7 @@ export class FpCameraControl {
     public animate() {
         const lastTime = this.lastUpdateTime;
         this.lastUpdateTime = Date.now();
-        const delta = (this.lastUpdateTime - lastTime) / 1000;
+        const delta = Math.min((this.lastUpdateTime - lastTime) / 1000, 100);
         if (this.keyManager.isPressed("w") && !this.keyManager.isPressed("s")) {
             this.state.moveForward(delta, 1);
         } else if (this.keyManager.isPressed("s") && !this.keyManager.isPressed("w")) {
