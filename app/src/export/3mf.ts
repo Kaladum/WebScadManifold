@@ -8,9 +8,11 @@ export async function export3mf(result: WebScadMainResult, thumbnail?: HTMLCanva
     file.header.title = "ThisIsATest";
     file.header.application = "web-scad-manifold";
 
+    let nextId = 1;
+
     for (const [obj, _] of iterateResultRecursive(result)) {
-        for (const [i, mesh] of obj.meshes.entries()) {
-            const id = i + 1;
+        for (const mesh of obj.meshes) {
+            const id = nextId++;
             file.meshes.push(
                 new Mesh3mf(id, mesh.vertices, mesh.indices)
             );
