@@ -63,6 +63,7 @@ export class ResultRenderer {
                 const material = new MeshPhongMaterial({
                     color,
                     flatShading: true,
+                    side: DoubleSide,
                 });
                 const geometry = new BufferGeometry();
                 geometry.setAttribute("position", new BufferAttribute(inputMesh.vertices, 3));
