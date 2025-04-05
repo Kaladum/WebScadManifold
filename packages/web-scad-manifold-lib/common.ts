@@ -4,13 +4,12 @@ export interface WebScadModule {
 
 export type WebScadMain = () => WebScadMainResult | Promise<WebScadMainResult | undefined> | undefined;
 
+export type WebScadMainResult = MultiResult<WebScadObject | WebScadExportable<WebScadObject>>;
 
-export type WebScadMainResult = WebScadObjectMulti;
+export type WebScadMainResultInternal = MultiResult<WebScadObject>;
 
-export type WebScadObjectMulti = WebScadObject | readonly WebScadMainResult[] | WebScadMainResultMultiObject;
-
-interface WebScadMainResultMultiObject extends Readonly<Record<string, WebScadMainResult>> { }
-
+export type MultiResult<T> = T | readonly MultiResult<T>[] | MultiResultObject<T>;
+interface MultiResultObject<T> extends Readonly<Record<string, MultiResult<T>>> { }
 
 export interface WebScadObject {
     readonly type: "object",
@@ -22,4 +21,9 @@ export interface WebScadMesh {
     readonly vertices: Float32Array,
     readonly indices: Uint32Array,
     readonly color?: readonly [number, number, number] | readonly [number, number, number, number],
+}
+
+export interface WebScadExportable<T> {
+    readonly isAWebScadExportableValue: true;
+    export(): T;
 }

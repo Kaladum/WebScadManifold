@@ -1,4 +1,4 @@
-import { WebScadObjectMulti } from "web-scad-manifold-lib";
+import { MultiResult, WebScadExportable, WebScadObject } from "web-scad-manifold-lib";
 import * as z from "zod";
 
 export const WebScadModuleSchema = z.object({
@@ -23,8 +23,21 @@ export const WebScadObjectSchema = z.object({
     meshes: WebScadMeshSchema.array()
 });
 
-export const WebScadObjectMultiSchema: z.ZodType<WebScadObjectMulti> = z.union([
+export const WebScadObjectSchemaTransformExport = z.object({ isAWebScadExportableValue: z.literal(true) }).transform<WebScadObject>(v => (v as WebScadExportable<WebScadObject>).export());
+export const WebScadObjectSchemaPreprocessExport = z.preprocess(v => {
+    if (typeof v !== "object") return v;
+    const exportable = v as WebScadExportable<WebScadObject>;
+    if (exportable.isAWebScadExportableValue !== true) return v;
+    return exportable.export();
+}, WebScadObjectSchema);
+
+export const WebScadObjectOrExportableObjectSchema = z.union([
     WebScadObjectSchema,
+    WebScadObjectSchemaPreprocessExport,
+]);
+
+export const WebScadObjectMultiSchema: z.ZodType<MultiResult<WebScadObject>, z.ZodTypeDef, unknown> = z.union([
+    WebScadObjectOrExportableObjectSchema,
     z.lazy(() => WebScadMultiObjectArraySchema),
 ]);
 
@@ -32,7 +45,7 @@ export const WebScadMultiObjectArraySchema = WebScadObjectMultiSchema.array();
 export const WebScadMultiObjectObject = z.record(z.string().nonempty(), WebScadObjectMultiSchema);
 
 export const WebScadResultSchema = z.union([
-    WebScadObjectMultiSchema,//TODO  
+    WebScadObjectMultiSchema,
     z.null(),
     z.undefined(),
 ]);

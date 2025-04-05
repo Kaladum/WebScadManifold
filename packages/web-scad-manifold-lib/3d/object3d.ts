@@ -1,10 +1,11 @@
-import { WebScadMesh, WebScadObject } from "../common";
+import { WebScadExportable, WebScadMesh, WebScadObject } from "../common";
 import { Manifold } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 
-export class Object3D {
+export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly fullManifold: ManifoldGc;
+	public readonly isAWebScadExportableValue = true;
 
 	public constructor(
 		public readonly manifoldsByMaterial: ReadonlyMap<Material, ManifoldGc>,
@@ -32,24 +33,24 @@ export class Object3D {
 
 		return new Object3D(resultByMaterial);
 	};
-}
 
-export function convertToResult(obj3d: Object3D): WebScadObject {
-	const meshes: WebScadMesh[] = [];
+	public export(): WebScadObject {
+		const meshes: WebScadMesh[] = [];
 
-	for (const [material, manifold] of obj3d.manifoldsByMaterial) {//TODO Update
-		const mesh = manifold.internal.getMesh();
+		for (const [material, manifold] of this.manifoldsByMaterial) {
+			const mesh = manifold.internal.getMesh();
 
-		meshes.push({
-			type: "mesh",
-			vertices: mesh.vertProperties,
-			indices: mesh.triVerts,
-			color: material.color,
-		});
+			meshes.push({
+				type: "mesh",
+				vertices: mesh.vertProperties,
+				indices: mesh.triVerts,
+				color: material.color,
+			});
+		}
+
+		return {
+			type: "object",
+			meshes,
+		};
 	}
-
-	return {
-		type: "object",
-		meshes,
-	};
 }

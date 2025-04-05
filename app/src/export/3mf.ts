@@ -1,8 +1,8 @@
-import { WebScadMainResult } from "web-scad-manifold-lib";
+import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 import { Child3mf, File3mf, Mesh3mf } from "3mf-lib";
 import { iterateResultRecursive } from "../utils/multiObject";
 
-export async function export3mf(result: WebScadMainResult, thumbnail?: HTMLCanvasElement): Promise<Uint8Array> {
+export async function export3mf(result: WebScadMainResultInternal, thumbnail?: HTMLCanvasElement): Promise<Uint8Array> {
     const file = new File3mf();
 
     file.header.title = "ThisIsATest";

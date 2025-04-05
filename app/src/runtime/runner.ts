@@ -3,10 +3,10 @@ import { JsRunnerWorker } from "./worker";
 
 // @ts-ignore
 import runWorkerUrl from "./worker?url&worker&no-inline";
-import { WebScadMainResult } from "web-scad-manifold-lib";
+import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 
 export class JsRunner {
-    public static async execute(content: Uint8Array): Promise<WebScadMainResult | undefined> {
+    public static async execute(content: Uint8Array): Promise<WebScadMainResultInternal | undefined> {
         const rawWorker = new Worker(runWorkerUrl, { type: "module" });
         const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
 

@@ -1,5 +1,5 @@
 import { expose, proxy } from "comlink";
-import { WebScadMainResult, WebScadModule } from "web-scad-manifold-lib";
+import { WebScadMainResultInternal, WebScadModule } from "web-scad-manifold-lib";
 import { WebScadModuleSchema, WebScadResultSchema } from "./typeCheck";
 
 export class JsRunnerWorker {
@@ -21,7 +21,7 @@ export class JsRunnerWorker {
         private readonly mainModule: WebScadModule,
     ) { }
 
-    public async run(): Promise<WebScadMainResult | undefined> {
+    public async run(): Promise<WebScadMainResultInternal | undefined> {
         const main = this.mainModule.main;
         const resultRaw = await main();
 

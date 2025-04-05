@@ -1,4 +1,4 @@
-import { WebScadMainResult } from "web-scad-manifold-lib";
+import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 
 export class ModelCalculationStateManager {
     public currentState: ModelStateLoading | ModelStateReady = new ModelStateLoading();
@@ -8,6 +8,6 @@ export class ModelStateLoading { }
 
 export class ModelStateReady {
     public constructor(
-        public readonly model: WebScadMainResult,
+        public readonly model: WebScadMainResultInternal,
     ) { }
 }

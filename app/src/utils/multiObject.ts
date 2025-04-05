@@ -1,8 +1,8 @@
-import { WebScadMainResult, WebScadObject } from "web-scad-manifold-lib";
+import { WebScadMainResultInternal, WebScadObject } from "web-scad-manifold-lib";
 
 export type TypePath = readonly (number | string)[];
 
-export function* iterateResultRecursive(result: WebScadMainResult): Iterable<[WebScadObject, TypePath]> {
+export function* iterateResultRecursive(result: WebScadMainResultInternal): Iterable<[WebScadObject, TypePath]> {
     if ("type" in result && result.type === "object") {
         yield [result as WebScadObject, []];
     } else if (result instanceof Array) {

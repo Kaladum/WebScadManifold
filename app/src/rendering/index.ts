@@ -1,5 +1,5 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3, Group } from "three";
-import { WebScadMainResult } from "web-scad-manifold-lib";
+import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3, Group, DoubleSide } from "three";
+import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 
 import { FpCameraControl } from "./camera";
 import { iterateResultRecursive } from "../utils/multiObject";
@@ -51,7 +51,7 @@ export class ResultRenderer {
         }
     }
 
-    public setContent(result: WebScadMainResult) {
+    public setContent(result: WebScadMainResultInternal) {
         this.modelGroup.clear();
 
         for (const [obj, _] of iterateResultRecursive(result)) {
