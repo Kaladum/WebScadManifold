@@ -1,6 +1,6 @@
 import Module from "manifold-3d";
 
-//@ts-ignore
+//@ts-expect-error This is a virtual URL
 import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
 
 import type * as EncapsulatedTypes from "manifold-3d/manifold-encapsulated-types";

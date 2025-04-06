@@ -17,11 +17,11 @@ export type Mat4 = readonly [
  * @return string transform attribute value
 */
 export function matrix2str(m: Mat4): string {
-	let str = ''
+	let str = "";
 	for (let i = 0; i < 16; i++) {
-		if (i % 4 == 3) continue
-		if (i > 0) str += ' '
-		str += m[i] || 0
+		if (i % 4 === 3) continue;
+		if (i > 0) str += " ";
+		str += m[i] || 0;
 	}
-	return str
+	return str;
 }

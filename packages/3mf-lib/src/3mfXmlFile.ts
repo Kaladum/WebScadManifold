@@ -1,10 +1,10 @@
-import { XMLBuilder } from "fast-xml-parser"
-import { Xml3mf, Xml3mfBuild, Xml3mfMeshObject, Xml3mfModel, Xml3mfResource, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf"
+import { XMLBuilder } from "fast-xml-parser";
+import { Xml3mf, Xml3mfBuild, Xml3mfMeshObject, Xml3mfModel, Xml3mfResource, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf";
 import { Xml3mfHeader } from "./header";
 import { Child3mf, Component3mf } from "./component";
 
 export class Xml3MfFile {
-	public precision: number = 17;
+	public precision = 17;
 	public readonly header = new Xml3mfHeader();
 
 	public readonly meshes: Mesh3mf[] = [];
@@ -13,7 +13,7 @@ export class Xml3MfFile {
 
 	public generate(): string {
 		const data: Xml3mf = {
-			'?xml': { '@_version': '1.0', '@_encoding': 'UTF-8' },
+			"?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
 			model: this.generateModel(
 				[
 					//Mesh objects
@@ -22,13 +22,13 @@ export class Xml3MfFile {
 					...this.components.map(v => ({ object: v.generate() })),
 				],
 				{ item: this.items.map(v => v.generate()) },
-			)
-		}
+			),
+		};
 
 		const builder = new XMLBuilder({
 			ignoreAttributes: false,
 			format: true,
-			suppressEmptyNode: true
+			suppressEmptyNode: true,
 		});
 
 		return builder.build(data);
@@ -36,10 +36,10 @@ export class Xml3MfFile {
 
 	private generateModel(resources: Xml3mfResource[], build: Xml3mfBuild): Xml3mfModel {
 		return {
-			'@_unit': this.header.unit ?? 'millimeter',
-			'@_xml:lang': 'en-US',
-			'@_xmlns': 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02',
-			'@_xmlns:slic3rpe': 'http://schemas.slic3r.org/3mf/2017/06',
+			"@_unit": this.header.unit ?? "millimeter",
+			"@_xml:lang": "en-US",
+			"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
+			"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
 			metadata: this.header.generateMetadata(),
 			resources,
 			build,
@@ -52,7 +52,7 @@ export class Mesh3mf {
 		public id: number,
 		public vertices: Float32Array,
 		public indices: Uint32Array,
-		public name?: string
+		public name?: string,
 	) { }
 
 	public generate(precision: number): Xml3mfMeshObject {

@@ -54,12 +54,12 @@ export const cText = (text: string) => document.createTextNode(text);
 export const cBr = () => document.createElement("br");
 
 export interface CElementOptions {
-	readonly text?: string;
-	readonly children?: Iterable<Node>;
-	readonly class?: string | string[];
-	readonly onClick?: (event: MouseEvent) => void;
-	readonly onClickHandled?: (event: MouseEvent) => void;
-	readonly custom?: ReadonlyArray<(element: HTMLElement) => void>;
+	readonly text?: string,
+	readonly children?: Iterable<Node>,
+	readonly class?: string | string[],
+	readonly onClick?: (event: MouseEvent) => void,
+	readonly onClickHandled?: (event: MouseEvent) => void,
+	readonly custom?: readonly ((element: HTMLElement) => void)[],
 }
 
 function cElement<TElement, TOptions>(
