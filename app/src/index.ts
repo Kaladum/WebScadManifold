@@ -3,6 +3,7 @@ import { PersistentDirectoryHandler } from "./db";
 import { runModelUi } from "./modelUi";
 import { runProjectSelection } from "./projectSelection";
 import { removeLastUsedDirReference, setLastUsedDirReference, tryOpenLastUsedDir } from "./projectSelection/lastOption";
+import { runDirectoryObservation } from "./runtime/observer";
 import { JsRunner } from "./runtime/runner";
 
 async function main() {
@@ -24,6 +25,7 @@ async function main() {
 async function loadForDir(dir: FileSystemDirectoryHandle) {
 	const runner = new JsRunner();
 	runner.updateCode(dir);
+	runDirectoryObservation(dir, runner);
 	await runModelUi(runner);
 }
 
