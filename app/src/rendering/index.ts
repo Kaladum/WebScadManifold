@@ -51,8 +51,10 @@ export class ResultRenderer {
 		}
 	}
 
-	public setContent(result: WebScadMainResultInternal) {
+	public setContent(result: WebScadMainResultInternal | undefined) {
 		this.modelGroup.clear();
+
+		if (result === undefined) return;
 
 		for (const [obj, _] of iterateResultRecursive(result)) {
 			for (const inputMesh of obj.meshes) {
