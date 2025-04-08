@@ -54,7 +54,21 @@ export function createDirectoryHandleResolverPlugin(dir: FileSystemDirectoryHand
 					const fileHandle: FileSystemFileHandle = args.pluginData;
 					const file = await fileHandle.getFile();
 					const text = await file.text();
-					return { contents: text, loader: "ts" };
+					let loader: esbuild.Loader | undefined;
+					if (args.with.type === "json") {
+						loader = "json";
+					} else if (args.with.type === "binary") {
+						loader = "binary";
+					} else if (args.with.type === "text") {
+						loader = "text";
+					} else if (file.name.endsWith(".ts") || file.name.endsWith(".mts")) {
+						loader = "ts";
+					} else if (file.name.endsWith(".js") || file.name.endsWith(".mjs")) {
+						loader = "js";
+					} else {
+						throw new Error(`Can't determine loader for file "${file.name}"`);
+					}
+					return { contents: text, loader };
 				}
 				return undefined;
 			});
