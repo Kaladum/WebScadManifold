@@ -1,16 +1,16 @@
-function textModifier(element: HTMLElement, options: CElementOptions) {
+function textModifier<TElement extends HTMLElement>(element: TElement, options: CElementOptions<TElement>) {
 	if (options.text !== undefined) {
 		element.textContent = options.text;
 	}
 }
 
-function childrenModifier(element: HTMLElement, options: CElementOptions) {
+function childrenModifier<TElement extends HTMLElement>(element: TElement, options: CElementOptions<TElement>) {
 	if (options.children !== undefined) {
 		element.append(...options.children);
 	}
 }
 
-function classModifier(element: HTMLElement, options: CElementOptions) {
+function classModifier<TElement extends HTMLElement>(element: TElement, options: CElementOptions<TElement>) {
 	if (typeof options.class === "string") {
 		element.classList.add(options.class);
 	} else if (options.class instanceof Array) {
@@ -18,7 +18,7 @@ function classModifier(element: HTMLElement, options: CElementOptions) {
 	}
 }
 
-function eventModifier(element: HTMLElement, options: CElementOptions) {
+function eventModifier<TElement extends HTMLElement>(element: TElement, options: CElementOptions<TElement>) {
 	if (options.onClick !== undefined) {
 		const onClick = options.onClick;
 		element.addEventListener("click", (e) => onClick(e));
@@ -33,33 +33,35 @@ function eventModifier(element: HTMLElement, options: CElementOptions) {
 	}
 }
 
-function customModifier(element: HTMLElement, options: CElementOptions) {
+function customModifier<TElement extends HTMLElement>(element: TElement, options: CElementOptions<TElement>) {
 	for (const customHandler of options.custom ?? []) {
 		customHandler(element);
 	}
 }
 
-const basicModifiers: readonly ElementModifier<HTMLElement, CElementOptions>[] = [
-	textModifier,
-	childrenModifier,
-	classModifier,
-	eventModifier,
-	customModifier,
-];
+function basicModifiers<TElement extends HTMLElement>(): readonly ElementModifier<TElement, CElementOptions<TElement>>[] {
+	return [
+		textModifier,
+		childrenModifier,
+		classModifier,
+		eventModifier,
+		customModifier,
+	]
+};
 
-export const cDiv = cElement<HTMLDivElement, CElementOptions>(() => document.createElement("div"), [...basicModifiers], {});
-export const cSpan = cElement<HTMLSpanElement, CElementOptions>(() => document.createElement("span"), [...basicModifiers], {});
-export const cButton = cElement<HTMLButtonElement, CElementOptions>(() => document.createElement("button"), [...basicModifiers], {});
+export const cDiv = cElement<HTMLDivElement, CElementOptions<HTMLDivElement>>(() => document.createElement("div"), [...basicModifiers<HTMLDivElement>()], {});
+export const cSpan = cElement<HTMLSpanElement, CElementOptions<HTMLSpanElement>>(() => document.createElement("span"), [...basicModifiers<HTMLSpanElement>()], {});
+export const cButton = cElement<HTMLButtonElement, CElementOptions<HTMLButtonElement>>(() => document.createElement("button"), [...basicModifiers<HTMLButtonElement>()], {});
 export const cText = (text: string) => document.createTextNode(text);
 export const cBr = () => document.createElement("br");
 
-export interface CElementOptions {
+export interface CElementOptions<T> {
 	readonly text?: string,
 	readonly children?: Iterable<Node>,
 	readonly class?: string | string[],
 	readonly onClick?: (event: MouseEvent) => void,
 	readonly onClickHandled?: (event: MouseEvent) => void,
-	readonly custom?: readonly ((element: HTMLElement) => void)[],
+	readonly custom?: readonly ((element: T) => void)[],
 }
 
 function cElement<TElement, TOptions>(
@@ -78,9 +80,9 @@ function cElement<TElement, TOptions>(
 
 export function uElement<TElement extends HTMLElement>(
 	element: TElement,
-	options: CElementOptions,
+	options: CElementOptions<TElement>,
 ): TElement {
-	for (const modifier of basicModifiers) {
+	for (const modifier of basicModifiers<TElement>()) {
 		modifier(element, options);
 	}
 	return element;
