@@ -1,17 +1,20 @@
+import { Parameter } from "./parameter";
+
 export interface WebScadModule {
 	main: WebScadMain,
+	parameters: WebScadParameters,
 }
 
 export type WebScadMain = () => WebScadMainResult | Promise<WebScadMainResult | undefined> | undefined;
 
-export type WebScadMainResult = MultiResult<WebScadObject | WebScadExportable<WebScadObject>>;
+export type WebScadMainResult = MultiValue<WebScadObject | WebScadExportable<WebScadObject>>;
 
-export type WebScadMainResultInternal = MultiResult<WebScadObject>;
+export type WebScadMainResultInternal = MultiValue<WebScadObject>;
 
-export type MultiResult<T> = T | readonly MultiResult<T>[] | MultiResultObject<T>;
+export type MultiValue<T> = T | readonly MultiValue<T>[] | MultiValueObject<T>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface MultiResultObject<T> extends Readonly<Record<string, MultiResult<T>>> { }
+interface MultiValueObject<T> extends Readonly<Record<string, MultiValue<T>>> { }
 
 export interface WebScadObject {
 	readonly type: "object",
@@ -29,3 +32,5 @@ export interface WebScadExportable<T> {
 	readonly isAWebScadExportableValue: true,
 	export(): T,
 }
+
+export type WebScadParameters = MultiValue<Parameter>;

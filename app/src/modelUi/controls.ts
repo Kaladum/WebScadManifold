@@ -4,8 +4,11 @@ import { ResultRenderer } from "../rendering";
 import { JsRunner } from "../runtime/runner";
 import { ModelState, ModelStateCompilationFailed, ModelStateExecutionFailed, ModelStateOk } from "../state";
 import { cButton, cDiv, uElement } from "../utils/jsml";
+import { ParameterUi } from "./parameter";
 
 export class ModelUiControls {
+	public readonly parameterUi: ParameterUi;
+
 	private readonly errorDisplay = uElement<HTMLTextAreaElement>(document.createElement("textarea"), {
 		class: "error",
 		custom: [
@@ -20,24 +23,29 @@ export class ModelUiControls {
 		],
 	});
 
-	public readonly container = cDiv({
-		class: "controls",
-		children: [
-			cDiv({
-				class: "export",
-				children: [
-					cButton({ text: "Export 3mf", onClickHandled: () => this.export() }),
-				],
-			}),
-			this.errorDisplay,
-			this.status,
-		],
-	});
+	public readonly container: HTMLDivElement;
 
 	public constructor(
 		private readonly runner: JsRunner,
 		private readonly renderer: ResultRenderer,
 	) {
+		this.parameterUi = new ParameterUi(this.runner);
+
+		this.container = cDiv({
+			class: "controls",
+			children: [
+				cDiv({
+					class: "export",
+					children: [
+						cButton({ text: "Export 3mf", onClickHandled: () => this.export() }),
+					],
+				}),
+				this.errorDisplay,
+				this.status,
+				this.parameterUi.container,
+			],
+		});
+
 		this.runner.currentState.valueChanged.addListener(state => this.update(state));
 		this.runner.isWorking.valueChanged.addListener(isWorking => this.status.classList.toggle("isWorking", isWorking));
 	}
@@ -45,7 +53,7 @@ export class ModelUiControls {
 	private async export() {
 		const state = this.runner.currentState.value;
 		if (state instanceof ModelStateOk) {
-			const model = state.model;
+			const model = state.result.model;
 
 			if (model !== undefined) {
 				const result = await export3mf(model, this.renderer.canvas);

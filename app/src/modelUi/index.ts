@@ -33,9 +33,11 @@ class ModelUi {
 
 		this.runner.currentState.valueChanged.addListener(state => {
 			if (state instanceof ModelStateOk) {
-				this.renderer.setContent(state.model);
+				this.renderer.setContent(state.result.model);
+				this.controls.parameterUi.updateParameters(state.result.parameters);
 			} else {
 				this.renderer.setContent(undefined);
+				this.controls.parameterUi.updateParameters(undefined);
 			}
 		});
 	}

@@ -1,8 +1,11 @@
-import { MultiResult, WebScadExportable, WebScadObject } from "web-scad-manifold-lib";
+import { WebScadExportable, WebScadObject } from "web-scad-manifold-lib";
 import * as z from "zod";
+import { createMultiSchema } from "./type/multi";
+import { WebScadMultiParameterSchema } from "./type/parameter";
 
 export const WebScadModuleSchema = z.object({
 	main: z.function(),
+	parameters: WebScadMultiParameterSchema.optional(),
 });
 
 export const WebScadColorValue = z.number().min(0).max(1);
@@ -36,13 +39,7 @@ export const WebScadObjectOrExportableObjectSchema = z.union([
 	WebScadObjectSchemaPreprocessExport,
 ]);
 
-export const WebScadObjectMultiSchema: z.ZodType<MultiResult<WebScadObject>, z.ZodTypeDef, unknown> = z.union([
-	WebScadObjectOrExportableObjectSchema,
-	z.lazy(() => WebScadMultiObjectArraySchema),
-]);
-
-export const WebScadMultiObjectArraySchema = WebScadObjectMultiSchema.array();
-export const WebScadMultiObjectObject = z.record(z.string().nonempty(), WebScadObjectMultiSchema);
+export const WebScadObjectMultiSchema = createMultiSchema(WebScadObjectOrExportableObjectSchema);
 
 export const WebScadResultSchema = z.union([
 	WebScadObjectMultiSchema,

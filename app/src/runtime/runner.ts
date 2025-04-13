@@ -1,25 +1,47 @@
-import { wrap } from "comlink";
+import { Remote, wrap } from "comlink";
 import { JsRunnerWorker } from "./worker";
-import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 import { ModelState, ModelStateCompilationFailed, ModelStateExecutionFailed, ModelStateInitializing, ModelStateOk } from "../state";
 import { sleep } from "../utils/sleep";
 import { buildDirectory } from "../builder";
 import { IRProperty, RWProperty } from "../utils/property";
 import { OutputFile } from "esbuild-wasm";
+import { WebScadRunResult } from "./transfer";
+import { ParameterStore } from "./type";
 
 // @ts-expect-error This is a virtual URL
 import runWorkerUrl from "./worker?url&worker&no-inline";
 
-export async function executeInWorker(content: Uint8Array): Promise<WebScadMainResultInternal | undefined> {
-	const rawWorker = new Worker(runWorkerUrl, { type: "module" });
-	const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
 
-	try {
-		const runtime = await jsRunnerWorker.create(content);
-		const result = await runtime.run();
-		return result;
-	} finally {
-		rawWorker.terminate();
+export class JsRunnerWorkerController {
+	public constructor(
+		private readonly rawWorker: Worker,
+		private readonly runner: Remote<JsRunnerWorker>,
+	) { }
+
+	public static async create(content: Uint8Array): Promise<JsRunnerWorkerController> {
+		const rawWorker = new Worker(runWorkerUrl, { type: "module" });
+		const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
+
+		try {
+			const runner = await jsRunnerWorker.create(content);
+			return new JsRunnerWorkerController(
+				rawWorker,
+				runner,
+			);
+		} catch (e) {
+			rawWorker.terminate();
+			throw e;
+		}
+	}
+
+	public async run(newParameters: ParameterStore): Promise<WebScadRunResult> {
+		await this.runner.setParameters(newParameters.serialize());
+
+		return await this.runner.run();
+	}
+
+	public terminate() {
+		this.rawWorker.terminate();
 	}
 }
 
@@ -30,6 +52,9 @@ export class JsRunner {
 	private readonly _isWorking = new RWProperty<boolean>(true);
 	public readonly isWorking: IRProperty<boolean> = this._isWorking;
 
+	public readonly parameters = new ParameterStore();
+	private newExecutionRequested = true;
+
 	public constructor() {
 		this.runner().catch(console.error);
 	}
@@ -38,11 +63,17 @@ export class JsRunner {
 
 	public updateCode(newCode: FileSystemDirectoryHandle) {
 		this.codeUpdate = newCode;
+		this.newExecutionRequested = true;
+		this._isWorking.value = true;
+	}
+
+	public requestNewExecution() {
+		this.newExecutionRequested = true;
 		this._isWorking.value = true;
 	}
 
 	private async runner(): Promise<void> {
-		const buildAndExecute = async (newCode: FileSystemDirectoryHandle) => {
+		const buildAndLoad = async (newCode: FileSystemDirectoryHandle): Promise<JsRunnerWorkerController | undefined> => {
 			let build: OutputFile;
 			try {
 				build = await buildDirectory(newCode);
@@ -51,25 +82,37 @@ export class JsRunner {
 				this._isWorking.value = false;
 				return;
 			}
-			let result: WebScadMainResultInternal | undefined;
+			let workerRunner: JsRunnerWorkerController;
 			try {
-				result = await executeInWorker(build.contents);
+				workerRunner = await JsRunnerWorkerController.create(build.contents);
+				return workerRunner;
 			} catch (e) {
 				this._currentState.value = new ModelStateExecutionFailed(e);
 				this._isWorking.value = false;
 				return;
 			}
-			this._currentState.value = new ModelStateOk(result);
-			this._isWorking.value = false;
 		};
 
+		let workerRunner: JsRunnerWorkerController | undefined;
 		while (true) {
+			await sleep(500);
 			if (this.codeUpdate !== undefined) {
 				const newCode = this.codeUpdate;
 				this.codeUpdate = undefined;
-				await buildAndExecute(newCode);
+				workerRunner?.terminate();
+				workerRunner = await buildAndLoad(newCode);
 			}
-			await sleep(1_000);
+
+			if (workerRunner !== undefined && this.newExecutionRequested) {
+				this.newExecutionRequested = false;
+				try {
+					const result = await workerRunner.run(this.parameters);
+					this._currentState.value = new ModelStateOk(result);
+				} catch (e) {
+					this._currentState.value = new ModelStateExecutionFailed(e);
+				}
+				this._isWorking.value = false;
+			}
 		}
 	}
 }

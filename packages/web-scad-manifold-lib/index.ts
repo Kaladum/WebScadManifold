@@ -3,4 +3,6 @@ export * from "./internal/bindings";
 export * from "./pipe";
 export * from "./material";
 
+export * from "./parameter";
+
 export * from "./3d/index";

@@ -91,6 +91,42 @@ body {
             }
         }
     }
+
+    .parameter {
+        grid-area: params;
+        pointer-events: initial;
+        padding-right: 1em;
+
+        display: flex;
+        align-items: start;
+        justify-content: end;
+
+        .object,
+        .array {
+            border: 0.1em solid black;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            column-gap: 0.5em;
+            row-gap: 0.25em;
+            padding: 0.25em;
+        }
+
+        .objectValue,
+        .arrayValue {
+            display: flex;
+            flex-direction: row;
+            align-content: stretch;
+        }
+
+        .objectKey,
+        .arrayIndex {
+            text-align: end;
+        }
+
+        .numberParameter {
+            width: 5em;
+        }
+    }
 }
 
 @keyframes spin {

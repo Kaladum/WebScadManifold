@@ -1,4 +1,4 @@
-import { WebScadMainResultInternal } from "web-scad-manifold-lib";
+import { WebScadRunResult } from "../runtime/transfer";
 
 export type ModelState = ModelStateInitializing | ModelStateOk | ModelStateCompilationFailed | ModelStateExecutionFailed;
 
@@ -15,6 +15,6 @@ export class ModelStateExecutionFailed {
 
 export class ModelStateOk {
 	public constructor(
-		public readonly model: WebScadMainResultInternal | undefined,
+		public readonly result: WebScadRunResult,
 	) { }
 }
