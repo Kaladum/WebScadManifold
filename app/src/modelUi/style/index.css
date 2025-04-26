@@ -90,6 +90,15 @@ body {
                 animation: spin 1.5s linear infinite;
             }
         }
+
+        .header {
+            grid-area: header;
+            padding: 0.5em;
+
+            display: flex;
+            justify-content: end;
+            pointer-events: initial;
+        }
     }
 
     .parameter {

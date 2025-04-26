@@ -1,5 +1,6 @@
 import { export3mf } from "../export/3mf";
 import { downloadBlob } from "../export/download";
+import { removeLastUsedDirReference } from "../projectSelection/lastOption";
 import { ResultRenderer } from "../rendering";
 import { JsRunner } from "../runtime/runner";
 import { ModelState, ModelStateCompilationFailed, ModelStateExecutionFailed, ModelStateOk } from "../state";
@@ -13,6 +14,19 @@ export class ModelUiControls {
 		class: "error",
 		custom: [
 			v => v.readOnly = true,
+		],
+	});
+
+	private readonly header = cDiv({
+		class: "header",
+		children: [
+			cButton({
+				text: "Close",
+				onClickHandled: () => {
+					removeLastUsedDirReference();
+					window.location.reload();
+				},
+			}),
 		],
 	});
 
@@ -54,6 +68,7 @@ export class ModelUiControls {
 				this.errorDisplay,
 				this.status,
 				this.parameterUi.container,
+				this.header,
 			],
 		});
 
