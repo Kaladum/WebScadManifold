@@ -55,9 +55,9 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 		};
 	}
 
-	public readonly boundingBox3d = (): Box => this.fullManifold.internal.boundingBox();
-	public readonly isEmpty3d = (): boolean => this.fullManifold.internal.isEmpty();
-	public readonly surfaceArea3d = (): number => this.fullManifold.internal.surfaceArea();
+	public readonly boundingBox = (): Box => this.fullManifold.internal.boundingBox();
+	public readonly isEmpty = (): boolean => this.fullManifold.internal.isEmpty();
+	public readonly surfaceArea = (): number => this.fullManifold.internal.surfaceArea();
 	public readonly volume = (): number => this.fullManifold.internal.volume();
 }
 

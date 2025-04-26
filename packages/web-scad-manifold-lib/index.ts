@@ -5,4 +5,5 @@ export * from "./material";
 
 export * from "./parameter";
 
-export * from "./3d/index";
+export * from "./3d";
+export * from "./2d";
