@@ -1,4 +1,5 @@
 import { Camera, Euler, Quaternion, Vector3 } from "three";
+import { RWProperty } from "../../utils/property";
 
 export class FpCameraState {
 	public constructor(
@@ -10,7 +11,11 @@ export class FpCameraState {
 	private readonly baseQuaternion = new Quaternion().setFromEuler(new Euler(90 / 180 * Math.PI, -90 / 180 * Math.PI, 0));
 	private readonly lookRotation = new Euler(0, 0, 0, "ZYX");
 
-	public unitsPerSecond = 50;
+	public readonly speedExp = new RWProperty<number>(0);
+
+	public get unitsPerSecond(): number {
+		return 50 * Math.pow(1.2, this.speedExp.value);
+	}
 
 	public applyMovementRotated(movement: Vector3) {
 		const rotatedMovement = movement.clone().applyEuler(new Euler(0, 0, this.lookRotation.y));

@@ -18,7 +18,7 @@ export class ResultRenderer {
 		children: [this.canvas],
 	});
 	private readonly camera = new PerspectiveCamera(75, 1, 0.1, 10_000);
-	private readonly controls = new FpCameraControl(this.canvas, this.camera);
+	public readonly controls = new FpCameraControl(this.canvas, this.camera);
 
 	private readonly modelGroup = new Group();
 

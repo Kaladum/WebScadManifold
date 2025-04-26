@@ -16,12 +16,7 @@ export class ModelUiControls {
 		],
 	});
 
-	private readonly status = cDiv({
-		class: ["status", "isWorking"],
-		children: [
-			cDiv({ class: "spinner" }),
-		],
-	});
+	private readonly status: HTMLDivElement;
 
 	public readonly container: HTMLDivElement;
 
@@ -31,6 +26,21 @@ export class ModelUiControls {
 		private readonly renderer: ResultRenderer,
 	) {
 		this.parameterUi = new ParameterUi(this.runner);
+
+		this.status = cDiv({
+			class: ["status", "isWorking"],
+			children: [
+				cDiv({ class: "spinner" }),
+				cDiv({
+					text: `SpeedExp: ${this.renderer.controls.state.speedExp.value}`,
+					custom: [
+						v => {
+							this.renderer.controls.state.speedExp.valueChanged.addListener(value => v.textContent = `SpeedExp: ${value}`);
+						},
+					],
+				}),
+			],
+		});
 
 		this.container = cDiv({
 			class: "controls",

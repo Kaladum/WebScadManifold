@@ -5,7 +5,7 @@ import { KeyManager } from "./keyManager";
 const radPerPixel = 0.3 / 180 * Math.PI;
 
 export class FpCameraControl {
-	private readonly state: FpCameraState;
+	public readonly state: FpCameraState;
 	private readonly keyManager = new KeyManager();
 
 	private lastUpdateTime = Date.now();
@@ -68,9 +68,9 @@ export class FpCameraControl {
 		});
 		el.addEventListener("wheel", e => {
 			if (e.deltaY > 0) {
-				this.state.unitsPerSecond /= 1.2;
+				this.state.speedExp.value += 1;
 			} else if (e.deltaY < 0) {
-				this.state.unitsPerSecond *= 1.2;
+				this.state.speedExp.value -= 1;
 			}
 		});
 		window.addEventListener("mousemove", e => {
