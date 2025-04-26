@@ -26,7 +26,7 @@ async function loadForDir(dir: FileSystemDirectoryHandle) {
 	const runner = new JsRunner();
 	runner.updateCode(dir);
 	runDirectoryObservation(dir, runner);
-	await runModelUi(runner);
+	await runModelUi(dir.name, runner);
 }
 
 main().catch(console.error);

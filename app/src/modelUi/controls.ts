@@ -26,6 +26,7 @@ export class ModelUiControls {
 	public readonly container: HTMLDivElement;
 
 	public constructor(
+		private readonly projectName: string,
 		private readonly runner: JsRunner,
 		private readonly renderer: ResultRenderer,
 	) {
@@ -57,7 +58,7 @@ export class ModelUiControls {
 
 			if (model !== undefined) {
 				const result = await export3mf(model, this.renderer.canvas);
-				downloadBlob(result, "my.3mf");
+				downloadBlob(result, this.projectName + ".3mf");
 			}
 		}
 	}

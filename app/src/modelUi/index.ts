@@ -8,8 +8,8 @@ import { cDiv } from "../utils/jsml";
 import "./style/index.css";
 import { JsRunner } from "../runtime/runner";
 
-export async function runModelUi(runner: JsRunner) {
-	const ui = new ModelUi(runner);
+export async function runModelUi(projectName: string, runner: JsRunner) {
+	const ui = new ModelUi(projectName, runner);
 	document.body.append(ui.container);
 }
 
@@ -22,10 +22,11 @@ class ModelUi {
 	});
 
 	public constructor(
+		private readonly projectName: string,
 		private readonly runner: JsRunner,
 	) {
 		this.renderer = new ResultRenderer();
-		this.controls = new ModelUiControls(this.runner, this.renderer);
+		this.controls = new ModelUiControls(this.projectName, this.runner, this.renderer);
 		this.container.append(
 			this.renderer.container,
 			this.controls.container,
