@@ -17,21 +17,17 @@ export interface Xml3mfModel {
 	"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
 	"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
 	metadata: Xml3mfMetadata[],
-	resources: Xml3mfResource[],
+	resources: {
+		object?: (Xml3mfMeshObject | Xml3mfComponentObject)[],
+		"m:colorgroup"?: Xml3mfColgroupContent[],
+	},
 	build: Xml3mfBuild,
 }
 
-export type Xml3mfResource = Xml3mfObjectResource | Xml3mfColgroupResource;
-export interface Xml3mfObjectResource {
-	object: Xml3mfMeshObject | Xml3mfComponentObject,
-}
-
-export interface Xml3mfColgroupResource {
-	"m:colorgroup": {
-		"@_id": number,
-		"m:color": {
-			"@_color": string,
-		},
+export interface Xml3mfColgroupContent {
+	"@_id": number,
+	"m:color": {
+		"@_color": string,
 	},
 }
 

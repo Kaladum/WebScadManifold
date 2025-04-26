@@ -1,5 +1,5 @@
 import { XMLBuilder } from "fast-xml-parser";
-import { Xml3mf, Xml3mfBuild, Xml3mfMeshObject, Xml3mfModel, Xml3mfResource, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf";
+import { Xml3mf, Xml3mfMeshObject, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf";
 import { Xml3mfHeader } from "./header";
 import { Child3mf, Component3mf } from "./component";
 
@@ -14,15 +14,22 @@ export class Xml3MfFile {
 	public generate(): string {
 		const data: Xml3mf = {
 			"?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
-			model: this.generateModel(
-				[
-					//Mesh objects
-					...this.meshes.map(v => ({ object: v.generate(this.precision) })),
-					//Component objects
-					...this.components.map(v => ({ object: v.generate() })),
-				],
-				{ item: this.items.map(v => v.generate()) },
-			),
+			model: {
+				"@_unit": this.header.unit ?? "millimeter",
+				"@_xml:lang": "en-US",
+				"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
+				"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
+				metadata: this.header.generateMetadata(),
+				resources: {
+					object: [
+						//Mesh objects
+						...this.meshes.map(v => v.generate(this.precision)),
+						//Component objects
+						...this.components.map(v => v.generate()),
+					],
+				},
+				build: { item: this.items.map(v => v.generate()) },
+			},
 		};
 
 		const builder = new XMLBuilder({
@@ -31,19 +38,8 @@ export class Xml3MfFile {
 			suppressEmptyNode: true,
 		});
 
-		return builder.build(data);
-	}
-
-	private generateModel(resources: Xml3mfResource[], build: Xml3mfBuild): Xml3mfModel {
-		return {
-			"@_unit": this.header.unit ?? "millimeter",
-			"@_xml:lang": "en-US",
-			"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
-			"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
-			metadata: this.header.generateMetadata(),
-			resources,
-			build,
-		};
+		const result: string = builder.build(data);
+		return result;
 	}
 }
 
