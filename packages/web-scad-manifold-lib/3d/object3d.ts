@@ -60,3 +60,5 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly surfaceArea3d = (): number => this.fullManifold.internal.surfaceArea();
 	public readonly volume = (): number => this.fullManifold.internal.volume();
 }
+
+//TODO fromMesh

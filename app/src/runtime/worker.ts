@@ -13,7 +13,7 @@ export class JsRunnerWorker {
 		let mainModuleRaw: unknown;
 		const url = URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
 		try {
-			mainModuleRaw = await import(/* @vite-ignore */ url);
+			mainModuleRaw = await import(/* @vite-ignore */ url);//TODO type module?
 		} finally {
 			URL.revokeObjectURL(url);
 		}

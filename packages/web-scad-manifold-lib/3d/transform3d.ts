@@ -31,3 +31,4 @@ export const hull3d = (contents: readonly (Object3D | AnyVec3)[]): Object3D => {
 	));
 };
 
+//TODO project, slice, translate(mat4), revolve

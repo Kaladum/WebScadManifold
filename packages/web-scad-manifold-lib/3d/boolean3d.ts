@@ -46,3 +46,5 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 	}
 	return result;
 };
+
+//TODO split,splitByPlane,trimByPlane,compose
