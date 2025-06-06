@@ -2,9 +2,11 @@
   "name": "3mf-lib",
   "version": "0.0.1",
   "main": "index.ts",
-  "devDependencies": {},
   "scripts": {},
   "author": "Kaladum",
   "license": "MIT",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "fast-xml-parser": "^5.2.4"
+  }
 }
