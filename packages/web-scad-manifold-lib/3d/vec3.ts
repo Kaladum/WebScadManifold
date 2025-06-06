@@ -10,11 +10,10 @@ export class Vec3 {
 
 export type AnyVec3 = SimpleVec3 | Vec3;
 
-// This should return a SimpleVec3 (readonly values). But unfortunately the manifold bindings don't accept that. Therefor i need this small hack.
-export function asSimpleVec3(vec3: AnyVec3): [number, number, number] {
+export function asSimpleVec3(vec3: AnyVec3): SimpleVec3 {
 	if (vec3 instanceof Vec3) {
 		return [vec3.x, vec3.y, vec3.z];
 	} else {
-		return vec3 as [number, number, number];
+		return vec3;
 	}
 }

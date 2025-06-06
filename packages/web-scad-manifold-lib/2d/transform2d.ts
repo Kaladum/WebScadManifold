@@ -25,7 +25,7 @@ export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
 			if (v instanceof Object2D) {
 				return v.crossSection.internal;
 			} else {
-				return [asSimpleVec2(v)];
+				return [asSimpleVec2(v) as [number, number]];
 			}
 		}),
 	));

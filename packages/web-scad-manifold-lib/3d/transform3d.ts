@@ -25,7 +25,7 @@ export const hull3d = (contents: readonly (Object3D | AnyVec3)[]): Object3D => {
 			if (v instanceof Object3D) {
 				return v.fullManifold.internal;
 			} else {
-				return asSimpleVec3(v);
+				return asSimpleVec3(v) as [number, number, number];
 			}
 		}),
 	));
