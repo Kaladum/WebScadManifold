@@ -1,5 +1,5 @@
 import { cDiv, uElement } from "../../utils/jsml";
-import { WebScadMultiParameterInternal, WebScadNumberParameterInternal } from "../../runtime/type";
+import { WebScadMultiParameterInternal, WebScadNumberParameterInternal, WebScadStringParameterInternal } from "../../runtime/type";
 import { JsRunner } from "../../runtime/runner";
 import { MultiValuePath } from "../../utils/multiObject";
 
@@ -26,7 +26,10 @@ function createParameterUi(parameter: WebScadMultiParameterInternal, path: Multi
 	}
 	if ("parameterType" in parameter) {
 		if (parameter.parameterType === "number") {
-			return createNumberParameter(parameter as WebScadNumberParameterInternal, path, runner);
+			return createNumberParameter(parameter, path, runner);
+		}
+		if (parameter.parameterType === "string") {
+			return createStringParameter(parameter, path, runner);
 		}
 	}
 	if (typeof parameter === "object") {
@@ -67,6 +70,27 @@ export function createNumberParameter(parameter: WebScadNumberParameterInternal,
 
 				v.addEventListener("change", () => {
 					runner.parameters.setValue(v.valueAsNumber, path);
+					runner.requestNewExecution();
+				});
+			},
+		],
+	});
+}
+
+export function createStringParameter(parameter: WebScadStringParameterInternal, path: MultiValuePath, runner: JsRunner): HTMLInputElement {
+	return uElement(document.createElement("input"), {
+		class: "stringParameter",
+		custom: [
+			v => {
+				const loadedValue = runner.parameters.getValueOrUndefined(path);
+				if (typeof loadedValue === "string") {
+					v.value = loadedValue;
+				} else {
+					v.value = parameter.value;
+				}
+
+				v.addEventListener("change", () => {
+					runner.parameters.setValue(v.value, path);
 					runner.requestNewExecution();
 				});
 			},

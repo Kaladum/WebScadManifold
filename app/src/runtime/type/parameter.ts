@@ -11,15 +11,18 @@ const createBaseParameterSchema = <TType extends string, TValue>(type: TType, va
 const numberParameterSchema = createBaseParameterSchema("number", z.number());
 export type WebScadNumberParameterInternal = z.infer<typeof numberParameterSchema>;
 
+const stringParameterSchema = createBaseParameterSchema("string", z.string());
+export type WebScadStringParameterInternal = z.infer<typeof stringParameterSchema>;
 
-export const WebScadSingleParameterSchema = numberParameterSchema;
+
+export const WebScadSingleParameterSchema = z.union([numberParameterSchema, stringParameterSchema]);
 
 export type WebScadSingleParameterInternal = z.infer<typeof WebScadSingleParameterSchema>;
 
-export const WebScadMultiParameterSchema = createMultiSchema<WebScadNumberParameterInternal>(WebScadSingleParameterSchema);
+export const WebScadMultiParameterSchema = createMultiSchema<WebScadSingleParameterInternal>(WebScadSingleParameterSchema);
 export type WebScadMultiParameterInternal = z.infer<typeof WebScadMultiParameterSchema>;
 
-export type ParameterValue = number;
+export type ParameterValue = number | string;
 
 export class ParameterStore {
 	private readonly lastKnownValues = new Map<string, ParameterValue>();

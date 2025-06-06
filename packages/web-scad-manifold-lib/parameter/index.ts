@@ -27,4 +27,20 @@ export class NumberParameter extends BaseParameter<number, "number"> {
 	}
 }
 
-export type Parameter = NumberParameter;
+export class StringParameter extends BaseParameter<string, "string"> {
+	public readonly parameterType = "string";
+
+	public constructor(options: {
+		readonly value: string,
+	}) {
+		super(options.value);
+	}
+
+	public trySetValue(value: unknown): boolean {
+		if (typeof value !== "string") return false;
+		this._value = value;
+		return true;
+	}
+}
+
+export type Parameter = NumberParameter | StringParameter;
