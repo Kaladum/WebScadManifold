@@ -1,4 +1,4 @@
-import { CrossSection } from "manifold-3d";
+import { CrossSection } from "./bindings";
 
 const deleteCrossSectionRegistry = new FinalizationRegistry<CrossSection>((manifold) => {
 	manifold.delete();

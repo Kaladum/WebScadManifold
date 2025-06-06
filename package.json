@@ -14,13 +14,13 @@
     "packages/3mf-lib"
   ],
   "dependencies": {
-    "fast-xml-parser": "^5.0.9"
+    "fast-xml-parser": "^5.2.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.26.0",
     "@stylistic/eslint-plugin-ts": "^4.2.0",
-    "eslint": "^9.24.0",
+    "eslint": "^9.26.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "^8.32.1"
   }
 }
