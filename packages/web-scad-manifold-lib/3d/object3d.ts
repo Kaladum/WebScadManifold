@@ -1,4 +1,3 @@
-import { Box } from "manifold-3d";
 import { WebScadExportable, WebScadMesh, WebScadObject } from "../common";
 import { Manifold } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
@@ -55,10 +54,15 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 		};
 	}
 
-	public readonly boundingBox = (): Box => this.fullManifold.internal.boundingBox();
+	public readonly boundingBox = (): Box3d => this.fullManifold.internal.boundingBox();
 	public readonly isEmpty = (): boolean => this.fullManifold.internal.isEmpty();
 	public readonly surfaceArea = (): number => this.fullManifold.internal.surfaceArea();
 	public readonly volume = (): number => this.fullManifold.internal.volume();
 }
+
+export interface Box3d {
+	min: [number, number, number],
+	max: [number, number, number],
+};
 
 //TODO fromMesh

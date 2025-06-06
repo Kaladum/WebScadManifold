@@ -1,4 +1,3 @@
-import { Rect } from "manifold-3d";
 import { CrossSectionGc } from "../internal";
 import { CrossSection } from "../internal/bindings";
 import { SimpleVec2 } from "./vec2";
@@ -19,7 +18,12 @@ export class Object2D {
 		return Object2D.fromCrossSection(operation(this.crossSection.internal));
 	};
 
-	public readonly bounds = (): Rect => this.crossSection.internal.bounds();
+	public readonly bounds = (): Rect2d => this.crossSection.internal.bounds();
 	public readonly isEmpty = (): boolean => this.crossSection.internal.isEmpty();
 	public readonly area = (): number => this.crossSection.internal.area();
 }
+
+export interface Rect2d {
+	min: [number, number],
+	max: [number, number],
+};
