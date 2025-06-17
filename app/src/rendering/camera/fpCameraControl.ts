@@ -68,11 +68,11 @@ export class FpCameraControl {
 		});
 		el.addEventListener("wheel", e => {
 			if (e.deltaY > 0) {
-				this.state.speedExp.value += 1;
-			} else if (e.deltaY < 0) {
 				this.state.speedExp.value -= 1;
+			} else if (e.deltaY < 0) {
+				this.state.speedExp.value += 1;
 			}
-		});
+		}, { passive: true });
 		window.addEventListener("mousemove", e => {
 			if (this.lastDragPosition !== undefined) {
 				const currentPosition: [number, number] = [e.clientX, e.clientY];//I could use movementX/Y here but it feels less natural
