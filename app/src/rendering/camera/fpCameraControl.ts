@@ -66,6 +66,18 @@ export class FpCameraControl {
 				this.lastDragPosition = undefined;
 			}
 		});
+		window.addEventListener("keypress", e => {
+			if (e.key === "+") {
+				this.state.speedExp.value += 1;
+				e.preventDefault();
+				e.stopPropagation();
+			}
+			if (e.key === "-") {
+				this.state.speedExp.value -= 1;
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		});
 		el.addEventListener("wheel", e => {
 			if (e.deltaY > 0) {
 				this.state.speedExp.value -= 1;
