@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"outDir": "dist",
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+	},
+	"exclude": [
+		"dist",
+	],
+}

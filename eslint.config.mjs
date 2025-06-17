@@ -13,6 +13,7 @@ export default tseslint.config(
 	{
 		ignores: [
 			"app/dist/*",
+			"packages/web-scad-manifold-lib/dist/*",
 		],
 	},
 	eslint.configs.recommended,

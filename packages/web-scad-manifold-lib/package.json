@@ -4,7 +4,7 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate-definitions": "npx dts-bundle-generator ./index.ts -o dist/web-scad-manifold-lib.d.ts --no-banner --export-referenced-types false"
   },
   "author": "Kaladum",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "opentype.js": "^1.3.4"
   },
   "devDependencies": {
-    "@types/opentype.js": "^1.3.8"
+    "@types/opentype.js": "^1.3.8",
+    "dts-bundle-generator": "^9.5.1"
   }
 }
