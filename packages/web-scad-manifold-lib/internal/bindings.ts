@@ -1,10 +1,8 @@
-import Module from "manifold-3d";
+import Module, * as manifold3d from "manifold-3d";
 
-import type * as EncapsulatedTypes from "manifold-3d/manifold-encapsulated-types";
-
-export type Manifold = EncapsulatedTypes.Manifold;
-export type CrossSection = EncapsulatedTypes.CrossSection;
-export type Mesh = EncapsulatedTypes.Mesh;
+export type Manifold = manifold3d.Manifold;
+export type CrossSection = manifold3d.CrossSection;
+export type Mesh = manifold3d.Mesh;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const manifold3dWasmImportUrl: string | undefined = (globalThis as any)["manifold3dWasmImportUrl"];
@@ -14,6 +12,7 @@ const wasm = await Module(manifold3dWasmImportUrl !== undefined ? {
 } : undefined);
 wasm.setup();
 
-export const Manifold = wasm.Manifold;
-export const CrossSection = wasm.CrossSection;
-export const Mesh = wasm.Mesh;
+//The .d.ts export looks silly if the types are not manually defined 
+export const Manifold: manifold3d.ManifoldToplevel["Manifold"] = wasm.Manifold;
+export const CrossSection: manifold3d.ManifoldToplevel["CrossSection"] = wasm.CrossSection;
+export const Mesh: manifold3d.ManifoldToplevel["Mesh"] = wasm.Mesh;
