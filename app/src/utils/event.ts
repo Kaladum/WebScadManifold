@@ -1,17 +1,11 @@
 import { ResolvablePromise } from "./resolvablePromise";
 
-const listenerFinalizationRegistry = new FinalizationRegistry<IStoppableListener>((listener) => {
-	if (!listener.isStopped) {
-		listener.stopListening();
-	}
-});
-
-export interface IEventSender<T> extends AsyncIterable<T> {
+export interface IEventSender<T> {
 	addListener(listener: (event: T) => void): IStoppableListener,
-	addListenerForObjectLifetime<TTarget extends object>(
-		listener: (event: T, target: TTarget) => void,
-		target: TTarget,
-	): IStoppableListener,
+	addListenerForObjectLifetime<TTarget extends object>(listener: (event: T, target: TTarget) => void, target: TTarget): IStoppableListener,
+	readonly nextEvent: Promise<T>,
+	iterate(): AsyncIterable<T>,
+	waitForSpecificEvent(relevant: (event: T) => boolean): Promise<T>,
 }
 
 export interface IStoppableListener {
@@ -23,7 +17,12 @@ export type IEventListener<T> = (event: T) => void;
 
 class BasicSender<T> implements IEventSender<T> {
 	private readonly listeners = new Set<IEventListener<T>>();
-	protected _nextEvent = new ResolvablePromise<T>();
+	protected _nextEvent = new ExtendedResolvablePromise<T>();
+	private readonly listenerFinalizationRegistry = new FinalizationRegistry<IStoppableListener>((listener) => {
+		if (!listener.isStopped) {
+			listener.stopListening();
+		}
+	});
 
 	public addListener(listener: IEventListener<T>): IStoppableListener {
 		if (this.listeners.has(listener)) {
@@ -53,11 +52,9 @@ class BasicSender<T> implements IEventSender<T> {
 			const targetStrongRef = targetWeakRef.deref();
 			if (targetStrongRef !== undefined) {
 				listener(event, targetStrongRef);
-			} else {
-				console.log("Target has been deleted by GC");
 			}
 		});
-		listenerFinalizationRegistry.register(target, activeListener);
+		this.listenerFinalizationRegistry.register(target, activeListener);
 		return activeListener;
 	}
 
@@ -66,7 +63,8 @@ class BasicSender<T> implements IEventSender<T> {
 			listener(eventObject);
 		}
 		const oldEvent = this._nextEvent;
-		this._nextEvent = new ResolvablePromise();
+		this._nextEvent = new ExtendedResolvablePromise();
+		oldEvent.nextPromise = this._nextEvent;
 		oldEvent.resolve(eventObject);
 	}
 
@@ -74,16 +72,22 @@ class BasicSender<T> implements IEventSender<T> {
 		return this._nextEvent;
 	}
 
-	[Symbol.asyncIterator](): AsyncIterator<T> {
-		return {
-			next: async (): Promise<IteratorResult<T>> => {
-				const value = await this.nextEvent;
-				return {
-					done: true,
-					value,
-				};
-			},
-		};
+	public async* iterate(): AsyncIterable<T> {
+		let currentPromise = this._nextEvent;
+		while (true) {
+			const value = await currentPromise;
+			currentPromise = currentPromise.nextPromise as ExtendedResolvablePromise<T>;
+			yield value;
+		}
+	}
+
+	public async waitForSpecificEvent(relevant: (event: T) => boolean): Promise<T> {
+		for await (const e of this.iterate()) {
+			if (relevant(e)) {
+				return e;
+			}
+		}
+		throw new Error("Unreachable");
 	}
 }
 
@@ -91,4 +95,9 @@ export class EventSender<T> extends BasicSender<T> {
 	public send(eventObject: T): void {
 		super.send(eventObject);
 	}
+}
+
+
+class ExtendedResolvablePromise<T> extends ResolvablePromise<T> {
+	public nextPromise: ExtendedResolvablePromise<T> | undefined;
 }
