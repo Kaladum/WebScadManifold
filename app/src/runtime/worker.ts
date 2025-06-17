@@ -4,7 +4,8 @@ import { WebScadModuleSchema, WebScadResultSchema } from "./typeCheck";
 import { WebScadRunResult } from "./transfer";
 import { iterateMultiValueRecursive } from "../utils/multiObject";
 import { ParameterValue, WebScadSingleParameterInternal } from "./type";
-import * as z from "zod";
+import * as z from "zod/v4";
+import { parseZodSchemaOrStringError } from "../utils/zod";
 
 type MainModuleType = z.infer<typeof WebScadModuleSchema>;
 
@@ -18,7 +19,7 @@ export class JsRunnerWorker {
 			URL.revokeObjectURL(url);
 		}
 		try {
-			const mainModule = WebScadModuleSchema.parse(mainModuleRaw);
+			const mainModule = parseZodSchemaOrStringError(WebScadModuleSchema, mainModuleRaw);
 			return proxy(new JsRunnerWorker(mainModule, (mainModuleRaw as MainModuleType)?.parameters));
 		} catch (e) {
 			throw new Error(String(e));//Make sure, that the error is transferable
@@ -34,7 +35,7 @@ export class JsRunnerWorker {
 		try {
 			const resultRaw = await this.mainModule.main();
 
-			const result = WebScadResultSchema.parse(resultRaw) ?? undefined;
+			const result = parseZodSchemaOrStringError(WebScadResultSchema, resultRaw) ?? undefined;
 			return {
 				model: result,
 				parameters: this.mainModule.parameters,

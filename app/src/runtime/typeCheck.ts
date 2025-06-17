@@ -1,10 +1,10 @@
 import { WebScadExportable, WebScadObject } from "web-scad-manifold-lib";
-import * as z from "zod";
+import * as z from "zod/v4";
 import { createMultiSchema } from "./type/multi";
 import { WebScadMultiParameterSchema } from "./type/parameter";
 
 export const WebScadModuleSchema = z.object({
-	main: z.function(),
+	main: z.custom<() => unknown>(v => typeof v === "function", { error: "value must be a function" }),
 	parameters: WebScadMultiParameterSchema.optional(),
 });
 

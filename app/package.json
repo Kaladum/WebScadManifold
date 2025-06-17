@@ -22,7 +22,7 @@
     "three": "^0.174.0",
     "typescript": "^5.8.2",
     "web-scad-manifold-lib": "*",
-    "zod": "^3.24.2"
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
