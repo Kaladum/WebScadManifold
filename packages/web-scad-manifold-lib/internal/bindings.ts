@@ -1,17 +1,17 @@
 import Module from "manifold-3d";
 
-//@ts-expect-error This is a virtual URL
-import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
-
 import type * as EncapsulatedTypes from "manifold-3d/manifold-encapsulated-types";
 
 export type Manifold = EncapsulatedTypes.Manifold;
 export type CrossSection = EncapsulatedTypes.CrossSection;
 export type Mesh = EncapsulatedTypes.Mesh;
 
-const wasm = await Module({
-	locateFile: () => manifoldWasmUrl,
-});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const manifold3dWasmImportUrl: string | undefined = (globalThis as any)["manifold3dWasmImportUrl"];
+
+const wasm = await Module(manifold3dWasmImportUrl !== undefined ? {
+	locateFile: () => manifold3dWasmImportUrl,
+} : undefined);
 wasm.setup();
 
 export const Manifold = wasm.Manifold;

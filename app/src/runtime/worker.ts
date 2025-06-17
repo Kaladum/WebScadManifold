@@ -7,6 +7,9 @@ import { ParameterValue, WebScadSingleParameterInternal } from "./type";
 import * as z from "zod/v4";
 import { parseZodSchemaOrStringError } from "../utils/zod";
 
+//@ts-expect-error This is a virtual URL
+import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
+
 type MainModuleType = z.infer<typeof WebScadModuleSchema>;
 
 export class JsRunnerWorker {
@@ -68,4 +71,7 @@ export class JsRunnerWorker {
 	}
 }
 
+// This is a hack to get the manifold URL to the library
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any)["manifold3dWasmImportUrl"] = manifoldWasmUrl;
 expose(JsRunnerWorker);
