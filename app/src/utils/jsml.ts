@@ -46,7 +46,7 @@ function basicModifiers<TElement extends HTMLElement>(): readonly ElementModifie
 		classModifier,
 		eventModifier,
 		customModifier,
-	]
+	];
 };
 
 export const cDiv = cElement<HTMLDivElement, CElementOptions<HTMLDivElement>>(() => document.createElement("div"), [...basicModifiers<HTMLDivElement>()], {});
