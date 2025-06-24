@@ -118,6 +118,10 @@ body {
             column-gap: 0.5em;
             row-gap: 0.25em;
             padding: 0.25em;
+
+            &:empty {
+                display: none;
+            }
         }
 
         .objectValue,
