@@ -1,5 +1,5 @@
 import { PersistentDirectoryHandler, StoredDirectoryHandle } from "../db";
-import { cButton, cDiv } from "../utils/jsml";
+import { cButton, cDiv, uElement } from "../utils/jsml";
 import { ResolvablePromise } from "../utils/resolvablePromise";
 
 import "./style/index.css";
@@ -7,6 +7,12 @@ import "./style/index.css";
 export async function runProjectSelection(dirDb: PersistentDirectoryHandler): Promise<StoredDirectoryHandle> {
 	const container = cDiv({
 		class: "project-selection",
+		children: [
+			uElement(document.createElement("h1"), {
+				text: "WebScad-Manifold",
+			}),
+			cDiv({ text: "Please open an existing folder or add a new one" }),
+		],
 	});
 
 	document.body.append(container);
@@ -27,6 +33,7 @@ async function runSingleProjectSelection(dirDb: PersistentDirectoryHandler, cont
 		class: "directory-handle",
 		children: [
 			cDiv({ text: storedDir.handle.name }),
+			cDiv({ text: "Last used: " + formatDate(storedDir.lastUsed) }),
 			cButton({
 				text: "Open",
 				onClickHandled: async () => {
@@ -57,7 +64,10 @@ async function runSingleProjectSelection(dirDb: PersistentDirectoryHandler, cont
 				}
 			},
 		}),
-		...entries.map(showDirectoryHandle),
+		cDiv({
+			class: "project-list",
+			children: entries.map(showDirectoryHandle),
+		}),
 	);
 
 	const result = await selectedResult;
@@ -80,3 +90,11 @@ async function tryOpenDirectory(storedDir: StoredDirectoryHandle): Promise<boole
 	}
 	return true;
 }
+
+const formatDate = (date: Date): string => {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+	const day = String(date.getDate()).padStart(2, "0");
+
+	return `${year}-${month}-${day}`;
+};
