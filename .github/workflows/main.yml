@@ -1,0 +1,56 @@
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+  # Allow manually running the workflow from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write      # Required for the actions/deploy-pages action
+      id-token: write   # Required for OIDC authentication (used by deploy-pages)
+
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install Node.js dependencies
+        run: npm ci
+        working-directory: app
+
+      - name: Build the Node.js project
+        run: npm run build
+        working-directory: app
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload production artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'app/dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
