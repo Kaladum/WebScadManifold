@@ -40,10 +40,7 @@ jobs:
 
       - name: Build the type definitions
         run: npm run generate-definitions
-        working-directory: packages/web-scad-manifold-lib
-
-      - name: Generate project template
-        run: node ./buildProjectTemplate.mjs
+        working-directory: packages/web-scad-manifold-lib      
 
       - name: Build the Node.js project
         run: npm run build
