@@ -82,7 +82,7 @@ export class ModelUiControls {
 			const model = state.result.model;
 
 			if (model !== undefined) {
-				const result = await export3mf(model, this.renderer.canvas);
+				const result = await export3mf(model, this.projectName, this.renderer.canvas);
 				downloadBlob(result, this.projectName + ".3mf");
 			}
 		}
