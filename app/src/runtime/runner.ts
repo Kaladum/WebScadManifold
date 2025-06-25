@@ -8,10 +8,6 @@ import { OutputFile } from "esbuild-wasm";
 import { WebScadRunResult } from "./transfer";
 import { ParameterStore } from "./type";
 
-// @ts-expect-error This is a virtual URL
-import runWorkerUrl from "./worker?url&worker&no-inline";
-
-
 export class JsRunnerWorkerController {
 	public constructor(
 		private readonly rawWorker: Worker,
@@ -19,7 +15,7 @@ export class JsRunnerWorkerController {
 	) { }
 
 	public static async create(content: Uint8Array): Promise<JsRunnerWorkerController> {
-		const rawWorker = new Worker(runWorkerUrl, { type: "module" });
+		const rawWorker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
 		const jsRunnerWorker = wrap<typeof JsRunnerWorker>(rawWorker);
 
 		try {

@@ -14,6 +14,7 @@ export default tseslint.config(
 		ignores: [
 			"app/dist/*",
 			"packages/web-scad-manifold-lib/dist/*",
+			"projectTemplate/types/*",
 		],
 	},
 	eslint.configs.recommended,

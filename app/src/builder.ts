@@ -2,7 +2,7 @@ import { build, initialize, OutputFile } from "esbuild-wasm";
 import { createDirectoryHandleResolverPlugin, createStaticResolverPlugin, externalResolverPlugin } from "./resolver";
 
 //@ts-expect-error This is a virtual URL
-import esbuildWasmUrl from "esbuild-wasm/esbuild.wasm?url";
+import esbuildWasmUrl from "esbuild-wasm/esbuild.wasm";
 
 await initialize({
 	wasmURL: esbuildWasmUrl,

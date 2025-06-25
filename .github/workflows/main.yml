@@ -43,7 +43,7 @@ jobs:
         working-directory: packages/web-scad-manifold-lib
 
       - name: Generate project template
-        run: node .\buildProjectTemplate.mjs
+        run: node ./buildProjectTemplate.mjs
 
       - name: Build the Node.js project
         run: npm run build

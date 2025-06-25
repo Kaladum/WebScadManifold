@@ -1,9 +1,7 @@
 import * as esbuild from "esbuild-wasm";
 import path from "path-browserify-esm";
 
-// @ts-expect-error This is a virtual URL
-import webScadManifoldLibPath from "web-scad-manifold-lib?url&worker&no-inline";
-
+const webScadManifoldLibPath = "./web-scad-manifold-lib.js";
 const STATIC_RESOLVED_NAMESPACE = "static-resolved";
 
 export function createStaticResolverPlugin(): esbuild.Plugin {

@@ -6,5 +6,8 @@
         "moduleResolution": "bundler",
         "noEmit": true,
         "skipLibCheck": true
-    }
+    },
+    "exclude": [
+        "dist"
+    ]
 }
