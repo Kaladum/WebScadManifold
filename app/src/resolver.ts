@@ -110,22 +110,14 @@ async function resolveDir(baseDir: FileSystemDirectoryHandle, pathSegments: read
 }
 
 async function resolveCodeFileInDir(dir: FileSystemDirectoryHandle, searchName: string): Promise<{ file: FileSystemFileHandle, fileName: string } | undefined> {
-	try {
-		const fileName = searchName;
-		const file = await dir.getFileHandle(fileName);
-		return { file, fileName };
-	} catch (_) { }
-	try {
-		const fileName = searchName + ".js";
-		const file = await dir.getFileHandle(fileName);
-		return { file, fileName };
-	} catch (_) { }
-	try {
-		const fileName = searchName + ".ts";
-		const file = await dir.getFileHandle(fileName);
-		return { file, fileName };
-	} catch (_) { }
-	return undefined;
+	const entries = await Array.fromAsync(dir.entries());
+
+	for (const fileName of [searchName, searchName + ".js", searchName + ".ts"]) {
+		const entry = entries.find(([name, _]) => name === fileName);
+		if (entry !== undefined && entry[1].kind === "file") {
+			return { file: entry[1], fileName };
+		}
+	}
 }
 
 export const externalResolverPlugin: esbuild.Plugin = {
