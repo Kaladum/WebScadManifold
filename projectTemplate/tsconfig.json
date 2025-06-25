@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"target": "es2024",
+		"module": "es2022",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"paths": {
+			"manifold-3d": [
+				"./types/manifold-3d/manifold.d.ts"
+			],
+			"web-scad-manifold-lib": [
+				"./types/web-scad-manifold-lib.d.ts"
+			]
+		}
+	},
+}

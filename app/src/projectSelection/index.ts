@@ -1,5 +1,5 @@
 import { PersistentDirectoryHandler, StoredDirectoryHandle } from "../db";
-import { cButton, cDiv, uElement } from "../utils/jsml";
+import { cA, cButton, cDiv, cText, uElement } from "../utils/jsml";
 import { ResolvablePromise } from "../utils/resolvablePromise";
 
 import "./style/index.css";
@@ -11,7 +11,15 @@ export async function runProjectSelection(dirDb: PersistentDirectoryHandler): Pr
 			uElement(document.createElement("h1"), {
 				text: "WebScad-Manifold",
 			}),
-			cDiv({ text: "Please open an existing folder or add a new one" }),
+			cDiv({ text: "Please open an existing folder or add a new one." }),
+			cDiv({
+				children: [
+					cText("You can use "),
+					cA({ text: "this template", href: "./web-scad-manifold-template.zip" }),
+					cText(" to start a new project"),
+				],
+			}),
+
 		],
 	});
 
@@ -53,7 +61,7 @@ async function runSingleProjectSelection(dirDb: PersistentDirectoryHandler, cont
 	});
 	container.append(
 		cButton({
-			text: "Open folder",
+			text: "Add local folder",
 			onClickHandled: async () => {
 				try {
 					const dir = await window.showDirectoryPicker();

@@ -37,7 +37,13 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci
-        working-directory: app
+
+      - name: Build the type definitions
+        run: npm run generate-definitions
+        working-directory: packages/web-scad-manifold-lib
+
+      - name: Generate project template
+        run: node .\buildProjectTemplate.mjs
 
       - name: Build the Node.js project
         run: npm run build

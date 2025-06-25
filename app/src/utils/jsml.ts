@@ -49,9 +49,20 @@ function basicModifiers<TElement extends HTMLElement>(): readonly ElementModifie
 	];
 };
 
+export interface AddHrefOptions {
+	readonly href?: string,
+}
+
+function addHref(element: HTMLAnchorElement, options: AddHrefOptions) {
+	if (options.href !== undefined) {
+		element.href = options.href;
+	}
+}
+
 export const cDiv = cElement<HTMLDivElement, CElementOptions<HTMLDivElement>>(() => document.createElement("div"), [...basicModifiers<HTMLDivElement>()], {});
 export const cSpan = cElement<HTMLSpanElement, CElementOptions<HTMLSpanElement>>(() => document.createElement("span"), [...basicModifiers<HTMLSpanElement>()], {});
 export const cButton = cElement<HTMLButtonElement, CElementOptions<HTMLButtonElement>>(() => document.createElement("button"), [...basicModifiers<HTMLButtonElement>()], {});
+export const cA = cElement<HTMLAnchorElement, CElementOptions<HTMLAnchorElement> & AddHrefOptions>(() => document.createElement("a"), [...basicModifiers<HTMLAnchorElement>(), addHref], {});
 export const cText = (text: string) => document.createTextNode(text);
 export const cBr = () => document.createElement("br");
 

@@ -1,3 +1,6 @@
 node_modules
 app/tmp
 app/dist
+app/public/web-scad-manifold-template.zip
+
+projectTemplate/types
