@@ -8,7 +8,7 @@ import * as z from "zod/v4";
 import { parseZodSchemaOrStringError } from "../utils/zod";
 
 //@ts-expect-error This is a virtual URL
-import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
+import manifoldWasmUrl from "manifold-3d/manifold.wasm";
 
 type MainModuleType = z.infer<typeof WebScadModuleSchema>;
 
@@ -17,7 +17,7 @@ export class JsRunnerWorker {
 		let mainModuleRaw: unknown;
 		const url = URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
 		try {
-			mainModuleRaw = await import(/* @vite-ignore */ url);//TODO type module?
+			mainModuleRaw = await import(url);
 		} finally {
 			URL.revokeObjectURL(url);
 		}
