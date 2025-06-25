@@ -36,6 +36,7 @@ export class ResolvablePromise<T> extends Promise<T> {
 		return Promise;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/class-literal-property-style
 	get [Symbol.toStringTag]() {
 		return "ResolvablePromise";
 	}
