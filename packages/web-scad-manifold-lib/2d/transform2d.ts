@@ -1,4 +1,6 @@
 import { CrossSection } from "../internal/bindings";
+import { pipe } from "../pipe";
+import { union2d } from "./boolean2d";
 import { Object2D } from "./object2d";
 import { AnyVec2, asSimpleVec2 } from "./vec2";
 
@@ -12,6 +14,14 @@ export const rotate2d = (rotation: number) => (current: Object2D) => {
 
 export const mirror2d = (normal: AnyVec2) => (current: Object2D) => {
 	return current.apply(manifold => manifold.mirror(asSimpleVec2(normal)));
+};
+
+export const mirrorCopy2d = (normal: AnyVec2) => (current: Object2D) => {
+	return pipe(
+		current,
+		mirror2d(normal),
+		union2d(current),
+	);
 };
 
 export const scale2d = (scale: number | AnyVec2) => (current: Object2D) => {

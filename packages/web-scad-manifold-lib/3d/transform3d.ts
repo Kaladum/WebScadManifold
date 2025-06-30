@@ -1,4 +1,6 @@
 import { Manifold } from "../internal/bindings";
+import { pipe } from "../pipe";
+import { union3d } from "./boolean3d";
 import { Object3D } from "./object3d";
 import { AnyVec3, asSimpleVec3 } from "./vec3";
 
@@ -12,6 +14,14 @@ export const rotate3d = (rotation: AnyVec3) => (current: Object3D) => {
 
 export const mirror3d = (normal: AnyVec3) => (current: Object3D) => {
 	return current.applyOnEachManifold(manifold => manifold.mirror(asSimpleVec3(normal)));
+};
+
+export const mirrorCopy3d = (normal: AnyVec3) => (current: Object3D) => {
+	return pipe(
+		current,
+		mirror3d(normal),
+		union3d(current),
+	);
 };
 
 export const scale3d = (scale: number | AnyVec3) => (current: Object3D) => {
