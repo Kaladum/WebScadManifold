@@ -1,5 +1,5 @@
 import { WebScadExportable, WebScadMesh, WebScadObject } from "../common";
-import { Manifold } from "../internal/bindings";
+import { Manifold, Mesh } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 
@@ -20,6 +20,16 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 
 	public static fromManifoldGc = (manifold: ManifoldGc, material: Material = Material.default) => new Object3D(new Map<Material, ManifoldGc>([[material, manifold]]));
 	public static fromManifold = (manifold: Manifold, material?: Material) => Object3D.fromManifoldGc(new ManifoldGc(manifold), material);
+
+	public static fromMesh = (vertexPositions: Float32Array, indices: Uint32Array): Object3D => {
+		const mesh = new Mesh({
+			numProp: 3,
+			vertProperties: vertexPositions,
+			triVerts: indices,
+		});
+
+		return Object3D.fromManifold(new Manifold(mesh));
+	};
 
 	public applyOnEachManifold = (operation: (input: Manifold) => Manifold): Object3D => {
 		const resultByMaterial = new Map<Material, ManifoldGc>();
@@ -64,5 +74,3 @@ export interface Box3d {
 	min: [number, number, number],
 	max: [number, number, number],
 };
-
-//TODO fromMesh
