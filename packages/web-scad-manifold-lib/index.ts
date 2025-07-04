@@ -1,6 +1,5 @@
 export * from "./common";
 export * from "./internal/bindings";
-export * from "./pipe";
 export * from "./material";
 
 export * from "./parameter";
