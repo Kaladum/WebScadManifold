@@ -9,6 +9,12 @@ export class Font {
 		this.font = opentype.parse(fontData);
 	}
 
+	public static async loadFromUrl(url: string): Promise<Font> {
+		const response = await fetch(url);
+		const arrayBuffer = await response.arrayBuffer();
+		return new Font(arrayBuffer);
+	}
+
 	public text2d = (text: string, fontSize: number, options: Text2dOptions = {}): Object2D => {
 		const renderOptions: opentype.RenderOptions = {
 			kerning: options.kerning,
