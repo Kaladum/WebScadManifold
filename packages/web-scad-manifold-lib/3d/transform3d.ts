@@ -1,30 +1,26 @@
 import { Manifold } from "../internal/bindings";
-import { pipe } from "../pipe";
-import { union3d } from "./boolean3d";
 import { Object3D } from "./object3d";
 import { AnyVec3, asSimpleVec3 } from "./vec3";
 
-export const translate3d = (offset: AnyVec3) => (current: Object3D) => {
+export const translate3d = (current: Object3D, offset: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.translate(asSimpleVec3(offset)));
 };
 
-export const rotate3d = (rotation: AnyVec3) => (current: Object3D) => {
+export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.rotate(asSimpleVec3(rotation)));
 };
 
-export const mirror3d = (normal: AnyVec3) => (current: Object3D) => {
+export const mirror3d = (current: Object3D, normal: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.mirror(asSimpleVec3(normal)));
 };
 
-export const mirrorCopy3d = (normal: AnyVec3) => (current: Object3D) => {
-	return pipe(
-		current,
-		mirror3d(normal),
-		union3d(current),
+export const mirrorCopy3d = (current: Object3D, normal: AnyVec3) => {
+	return current.union(
+		current.mirror(normal),
 	);
 };
 
-export const scale3d = (scale: number | AnyVec3) => (current: Object3D) => {
+export const scale3d = (current: Object3D, scale: number | AnyVec3) => {
 	const innerScale = typeof scale === "number" ? scale : asSimpleVec3(scale);
 	return current.applyOnEachManifold(manifold => manifold.scale(innerScale));
 };

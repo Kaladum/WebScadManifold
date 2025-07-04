@@ -1,8 +1,6 @@
 import opentype, { PathCommand } from "opentype.js";
 import { SimpleVec2 } from "./vec2";
 import { Object2D } from "./object2d";
-import { pipe } from "../pipe";
-import { translate2d } from "./transform2d";
 
 export class Font {
 	private readonly font: opentype.Font;
@@ -16,16 +14,15 @@ export class Font {
 			kerning: options.kerning,
 		};
 		const path = this.font.getPath(text, 0, 0, fontSize, renderOptions);
-
 		const polygon = commandsToPolygon(path.commands, options.curveSplits ?? 1);
 
-		return pipe(
-			Object2D.fromPolygons(polygon),
-			options.horizontalCenter ? (v => {
-				const width = this.font.getAdvanceWidth(text, fontSize, renderOptions);
-				return translate2d([-width / 2, 0])(v);
-			}) : v => v,
-		);
+		let result = Object2D.fromPolygons(polygon);
+
+		if (options.horizontalCenter) {
+			const width = this.font.getAdvanceWidth(text, fontSize, renderOptions);
+			result = result.translate([-width / 2, 0]);
+		}
+		return result;
 	};
 }
 

@@ -3,7 +3,7 @@ import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 import { Object3D } from "./object3d";
 
-export const difference3d = (...others: readonly Object3D[]) => (current: Object3D) => {
+export const difference3d = (current: Object3D, ...others: readonly Object3D[]) => {
 	const allCutAwayManifolds = others.map(v => v.fullManifold.internal);
 	const cutAway = Manifold.union(allCutAwayManifolds);
 
@@ -12,10 +12,10 @@ export const difference3d = (...others: readonly Object3D[]) => (current: Object
 	return result;
 };
 
-export const union3d = (...others: readonly Object3D[]) => (current: Object3D) => {
+export const union3d = (...items: readonly Object3D[]) => {
 	const resultByMaterial = new Map<Material, ManifoldGc>();
 
-	for (const obj of [current, ...others]) {
+	for (const obj of items) {
 		for (const [material, manifold] of obj.manifoldsByMaterial) {
 			const existingManifold = resultByMaterial.get(material);
 
@@ -31,7 +31,7 @@ export const union3d = (...others: readonly Object3D[]) => (current: Object3D) =
 	return new Object3D(resultByMaterial);
 };
 
-export const intersect3d = (...others: readonly Object3D[]) => (current: Object3D) => {
+export const intersect3d = (current: Object3D, ...others: readonly Object3D[]) => {
 	const finalShape = Manifold.intersection([current, ...others].map(v => v.fullManifold.internal));
 	const result = current.applyOnEachManifold(manifold => manifold.intersect(finalShape));
 	finalShape.delete();

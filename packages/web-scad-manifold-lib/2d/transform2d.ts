@@ -1,32 +1,34 @@
+import { Mat3 } from "manifold-3d";
 import { CrossSection } from "../internal/bindings";
-import { pipe } from "../pipe";
-import { union2d } from "./boolean2d";
+import { Matrix3 } from "./matrix";
 import { Object2D } from "./object2d";
 import { AnyVec2, asSimpleVec2 } from "./vec2";
 
-export const translate2d = (offset: AnyVec2) => (current: Object2D) => {
-	return current.apply(manifold => manifold.translate(asSimpleVec2(offset)));
+export const transform2d = (current: Object2D, matrix: Matrix3) => {
+	return current.applyRaw(manifold => manifold.transform(matrix.values.flatMap(v => v) as Mat3));
 };
 
-export const rotate2d = (rotation: number) => (current: Object2D) => {
-	return current.apply(manifold => manifold.rotate(rotation));
+export const translate2d = (current: Object2D, offset: AnyVec2) => {
+	return current.applyRaw(manifold => manifold.translate(asSimpleVec2(offset)));
 };
 
-export const mirror2d = (normal: AnyVec2) => (current: Object2D) => {
-	return current.apply(manifold => manifold.mirror(asSimpleVec2(normal)));
+export const rotate2d = (current: Object2D, rotation: number) => {
+	return current.applyRaw(manifold => manifold.rotate(rotation));
 };
 
-export const mirrorCopy2d = (normal: AnyVec2) => (current: Object2D) => {
-	return pipe(
-		current,
-		mirror2d(normal),
-		union2d(current),
+export const mirror2d = (current: Object2D, normal: AnyVec2) => {
+	return current.applyRaw(manifold => manifold.mirror(asSimpleVec2(normal)));
+};
+
+export const mirrorCopy2d = (current: Object2D, normal: AnyVec2) => {
+	return current.union(
+		current.mirror(normal),
 	);
 };
 
-export const scale2d = (scale: number | AnyVec2) => (current: Object2D) => {
+export const scale2d = (current: Object2D, scale: number | AnyVec2) => {
 	const innerScale = typeof scale === "number" ? scale : asSimpleVec2(scale);
-	return current.apply(manifold => manifold.scale(innerScale));
+	return current.applyRaw(manifold => manifold.scale(innerScale));
 };
 
 export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
