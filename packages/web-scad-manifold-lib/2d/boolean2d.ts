@@ -12,6 +12,15 @@ export const union2d = (...items: readonly Object2D[]) => {
 	return Object2D.fromCrossSection(CrossSection.union(items.map(v => v.crossSection.internal)));
 };
 
+export const autoUnion2d = (value: Object2D | readonly Object2D[]) => {
+	if (value instanceof Array) {
+		if (value.length === 0) return value[0];
+		return union2d(...value);
+	} else {
+		return value;
+	}
+};
+
 export const intersect2d = (...items: readonly Object2D[]) => {
 	return Object2D.fromCrossSection(CrossSection.intersection(items.map(v => v.crossSection.internal)));
 };

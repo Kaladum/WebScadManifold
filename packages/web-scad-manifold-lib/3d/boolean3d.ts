@@ -31,6 +31,16 @@ export const union3d = (...items: readonly Object3D[]) => {
 	return new Object3D(resultByMaterial);
 };
 
+
+export const autoUnion3d = (value: Object3D | readonly Object3D[]) => {
+	if (value instanceof Array) {
+		if (value.length === 0) return value[0];
+		return union3d(...value);
+	} else {
+		return value;
+	}
+};
+
 export const intersect3d = (current: Object3D, ...others: readonly Object3D[]) => {
 	const finalShape = Manifold.intersection([current, ...others].map(v => v.fullManifold.internal));
 	const result = current.applyOnEachManifold(manifold => manifold.intersect(finalShape));
