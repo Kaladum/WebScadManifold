@@ -24,9 +24,12 @@ export class Font {
 
 		let result = Object2D.fromPolygons(polygon);
 
+		const bounds = result.bounds();
 		if (options.horizontalCenter) {
-			const width = this.font.getAdvanceWidth(text, fontSize, renderOptions);
-			result = result.translate([-width / 2, 0]);
+			result = result.translate([-(bounds.min[0] + bounds.max[0]) / 2, 0]);
+		}
+		if (options.verticalCenter) {
+			result = result.translate([0, -(bounds.min[1] + bounds.max[1]) / 2]);
 		}
 		return result;
 	};
@@ -104,4 +107,5 @@ export interface Text2dOptions {
 	readonly curveSplits?: number,
 	readonly kerning?: boolean,
 	readonly horizontalCenter?: boolean,
+	readonly verticalCenter?: boolean,
 }
