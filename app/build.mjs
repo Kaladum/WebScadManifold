@@ -51,7 +51,7 @@ const options = {
 		"module",
 	],
 	minify: production,
-	sourcemap: !production ? "external" : undefined,
+	sourcemap: production ? undefined : "inline",
 	treeShaking: true,
 };
 
