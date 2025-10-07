@@ -7,4 +7,4 @@ export const cube = (size?: AnyVec3, center?: boolean) => Object3D.fromManifold(
 export const sphere = (radius: number, circularSegments?: number) => Object3D.fromManifold(Manifold.sphere(radius ?? 1, circularSegments));
 export const tetrahedron = () => Object3D.fromManifold(Manifold.tetrahedron());
 
-export const cylinder = (radius = 1, height = 1) => circle(radius).extrude(height);
+export const cylinder = (radius = 1, height = 1, circularSegments?: number) => circle(radius, circularSegments).extrude(height);
