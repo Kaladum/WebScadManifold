@@ -82,7 +82,9 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly scale = (scale: number | AnyVec3) => scale3d(this, scale);
 
 	public readonly difference = (...others: readonly Object3D[]) => difference3d(this, ...others);
+	public readonly subtract = (...others: readonly Object3D[]) => this.difference(...others);
 	public readonly union = (...others: readonly Object3D[]) => union3d(this, ...others);
+	public readonly add = (...others: readonly Object3D[]) => this.union(...others);
 	public readonly intersect = (...others: readonly Object3D[]) => intersect3d(this, ...others);
 
 	public readonly setMaterial = (material: Material) => setMaterial3d(this, material);

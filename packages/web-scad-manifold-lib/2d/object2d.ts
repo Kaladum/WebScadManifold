@@ -36,7 +36,9 @@ export class Object2D {
 	public readonly scale = (scale: number | AnyVec2) => scale2d(this, scale);
 
 	public readonly difference = (...others: readonly Object2D[]) => difference2d(this, ...others);
+	public readonly subtract = (...others: readonly Object2D[]) => this.difference(...others);
 	public readonly union = (...others: readonly Object2D[]) => union2d(this, ...others);
+	public readonly add = (...others: readonly Object2D[]) => this.union(...others);
 	public readonly intersect = (...others: readonly Object2D[]) => intersect2d(this, ...others);
 	public readonly decompose = (): Object2D[] => decompose2d(this);
 
