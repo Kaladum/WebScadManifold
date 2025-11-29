@@ -10,7 +10,7 @@ export class Font {
 	}
 
 	public static async loadFromUrl(url: string): Promise<Font> {
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: "omit" });
 		const arrayBuffer = await response.arrayBuffer();
 		return new Font(arrayBuffer);
 	}
