@@ -32,7 +32,9 @@ export class Object2D {
 	public readonly translate = (offset: AnyVec2) => translate2d(this, offset);
 	public readonly translateX = (offset: number) => translateX2d(this, offset);
 	public readonly translateY = (offset: number) => translateY2d(this, offset);
+	public readonly translateRepeat = (offsets: readonly AnyVec2[]) => translateRepeat2d(this, offsets);
 	public readonly rotate = (rotation: number) => rotate2d(this, rotation);
+	public readonly rotateRepeat = (rotations: readonly number[]) => rotateRepeat2d(this, rotations);
 	public readonly mirror = (normal: AnyVec2) => mirror2d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec2) => mirrorCopy2d(this, normal);
 	public readonly scale = (scale: number | AnyVec2) => scale2d(this, scale);
