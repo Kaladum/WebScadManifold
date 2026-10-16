@@ -19,12 +19,22 @@ export class Vec3 {
 
 	public readonly dot = (other: Vec3): number => this.x * other.x + this.y * other.y + this.z * other.z;
 
+	public readonly negate = (): Vec3 => new Vec3(-this.x, -this.y, -this.z);
+
 	public static from(vec: AnyVec3): Vec3 {
 		if (vec instanceof Vec3) {
 			return vec;
 		} else {
 			return new Vec3(...vec);
 		}
+	}
+
+	public static lerp(a: Vec3, b: Vec3, t: number): Vec3 {
+		return new Vec3(
+			a.x + (b.x - a.x) * t,
+			a.y + (b.y - a.y) * t,
+			a.z + (b.z - a.z) * t,
+		);
 	}
 }
 
