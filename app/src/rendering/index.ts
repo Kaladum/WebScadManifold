@@ -58,9 +58,11 @@ export class ResultRenderer {
 
 		for (const [obj, _] of iterateResultRecursive(result)) {
 			for (const inputMesh of obj.meshes) {
-				let color = new Color(0.56, 0.66, 0.2);
+				let color: Color;
 				if (inputMesh.color !== undefined) {
 					color = new Color(inputMesh.color[0], inputMesh.color[1], inputMesh.color[2]);
+				} else {
+					color = new Color(0.56, 0.66, 0.2);
 				}
 				const material = new MeshPhongMaterial({
 					color,

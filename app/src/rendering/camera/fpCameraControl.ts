@@ -30,9 +30,9 @@ export class FpCameraControl {
 			this.state.moveForward(delta, -1);
 		}
 		if (this.keyManager.isPressed("d") && !this.keyManager.isPressed("a")) {
-			this.state.moveRight(delta, -1);
-		} else if (this.keyManager.isPressed("a") && !this.keyManager.isPressed("d")) {
 			this.state.moveRight(delta, 1);
+		} else if (this.keyManager.isPressed("a") && !this.keyManager.isPressed("d")) {
+			this.state.moveRight(delta, -1);
 		}
 		if (this.keyManager.isPressed("shift") && !this.keyManager.isPressed(" ")) {
 			this.state.moveUp(delta, -1);

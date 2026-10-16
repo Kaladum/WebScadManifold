@@ -1,15 +1,13 @@
-import { Camera, Euler, Quaternion, Vector3 } from "three";
+import { Camera, Euler, Vector3 } from "three";
 import { RWProperty } from "../../utils/property";
 
 export class FpCameraState {
 	public constructor(
 		private readonly camera: Camera,
 	) {
-		this.camera.quaternion.copy(this.baseQuaternion);
+		this.camera.rotation.order = "ZXY";
+		this.camera.rotation.x = Math.PI / 2;
 	}
-
-	private readonly baseQuaternion = new Quaternion().setFromEuler(new Euler(90 / 180 * Math.PI, -90 / 180 * Math.PI, 0));
-	private readonly lookRotation = new Euler(0, 0, 0, "ZYX");
 
 	public readonly speedExp = new RWProperty<number>(0);
 
@@ -18,16 +16,16 @@ export class FpCameraState {
 	}
 
 	public applyMovementRotated(movement: Vector3) {
-		const rotatedMovement = movement.clone().applyEuler(new Euler(0, 0, this.lookRotation.y));
+		const rotatedMovement = movement.clone().applyEuler(new Euler(0, 0, this.camera.rotation.z));
 		this.camera.position.add(rotatedMovement);
 	}
 
 	public moveForward(time: number, factor: number/**Can be used to move in the opposite direction */) {
-		this.applyMovementRotated(new Vector3(this.unitsPerSecond * time * factor, 0, 0));
+		this.applyMovementRotated(new Vector3(0, this.unitsPerSecond * time * factor, 0));
 	}
 
 	public moveRight(time: number, factor: number /**factor Can be used to move in the opposite direction*/) {
-		this.applyMovementRotated(new Vector3(0, this.unitsPerSecond * time * factor, 0));
+		this.applyMovementRotated(new Vector3(this.unitsPerSecond * time * factor, 0, 0));
 	}
 
 	public moveUp(time: number, factor: number /**factor Can be used to move in the opposite direction*/) {
@@ -35,13 +33,8 @@ export class FpCameraState {
 	}
 
 	public rotate(rollYaw: number, rollPitch: number) {
-		this.lookRotation.y += rollYaw;
-		this.lookRotation.x = clamp(this.lookRotation.x + rollPitch, -Math.PI / 2, Math.PI / 2);
-
-		const lookQuaternion = new Quaternion().setFromEuler(this.lookRotation);
-
-		const fullQuaternion = this.baseQuaternion.clone().multiply(lookQuaternion);
-		this.camera.quaternion.copy(fullQuaternion);
+		this.camera.rotation.z += rollYaw;
+		this.camera.rotation.x = clamp(this.camera.rotation.x + rollPitch, 0, Math.PI);
 	}
 }
 
