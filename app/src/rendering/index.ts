@@ -1,4 +1,5 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3, Group, DoubleSide } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, Mesh, BufferGeometry, BufferAttribute, MeshPhongMaterial, AmbientLight, DirectionalLight, Color, Object3D, Vector3, Group, DoubleSide, AxesHelper } from "three";
+import { ViewportGizmo } from "three-viewport-gizmo";
 import { WebScadMainResultInternal } from "web-scad-manifold-lib";
 
 import { FpCameraControl } from "./camera";
@@ -22,8 +23,18 @@ export class ResultRenderer {
 
 	private readonly modelGroup = new Group();
 
+	private readonly gizmo: ViewportGizmo;
+
 	public constructor() {
 		this.scene.background = new Color(0xffffff);
+		const axesHelper = new AxesHelper(10_000);
+		this.scene.add(axesHelper);
+		this.gizmo = new ViewportGizmo(this.camera, this.renderer, {
+			offset: {
+				right: 100,
+			},
+			animated: false,
+		});
 
 		const animate = () => {
 			this.controls.animate();
@@ -32,6 +43,8 @@ export class ResultRenderer {
 			this.camera.aspect = size.width / size.height;
 			this.camera.updateProjectionMatrix();//TODO Only call if necessary
 			this.renderer.render(this.scene, this.camera);
+			this.gizmo.update();
+			this.gizmo.render();
 		};
 
 		this.renderer.setAnimationLoop(animate);
@@ -68,6 +81,7 @@ export class ResultRenderer {
 					color,
 					flatShading: true,
 					side: DoubleSide,
+					//wireframe: true,
 				});
 				const geometry = new BufferGeometry();
 				geometry.setAttribute("position", new BufferAttribute(inputMesh.vertices, 3));
