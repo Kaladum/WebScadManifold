@@ -3,7 +3,7 @@ import { CrossSection } from "../internal/bindings";
 import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
-import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d } from "./transform2d";
+import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d } from "./transform2d";
 import { AnyVec2, SimpleVec2 } from "./vec2";
 
 export class Object2D {
@@ -30,6 +30,8 @@ export class Object2D {
 
 	public readonly transform = (matrix: Matrix3) => transform2d(this, matrix);
 	public readonly translate = (offset: AnyVec2) => translate2d(this, offset);
+	public readonly translateX = (offset: number) => translateX2d(this, offset);
+	public readonly translateY = (offset: number) => translateY2d(this, offset);
 	public readonly rotate = (rotation: number) => rotate2d(this, rotation);
 	public readonly mirror = (normal: AnyVec2) => mirror2d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec2) => mirrorCopy2d(this, normal);

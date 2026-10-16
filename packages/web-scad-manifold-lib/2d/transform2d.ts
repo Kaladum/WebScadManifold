@@ -12,6 +12,14 @@ export const translate2d = (current: Object2D, offset: AnyVec2) => {
 	return current.applyRaw(manifold => manifold.translate(asSimpleVec2(offset)));
 };
 
+export const translateX2d = (current: Object2D, offset: number) => {
+	return current.applyRaw(manifold => manifold.translate([offset, 0]));
+};
+
+export const translateY2d = (current: Object2D, offset: number) => {
+	return current.applyRaw(manifold => manifold.translate([0, offset]));
+};
+
 export const rotate2d = (current: Object2D, rotation: number) => {
 	return current.applyRaw(manifold => manifold.rotate(rotation));
 };

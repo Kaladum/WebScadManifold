@@ -2,10 +2,10 @@ import { WebScadExportable, WebScadMesh, WebScadObject } from "../common";
 import { Manifold, Mesh } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
-import { difference3d, intersect3d, union3d } from "./boolean3d";
+import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByPlane3d, union3d } from "./boolean3d";
 import { setMaterial3d } from "./material3d";
-import { mirror3d, mirrorCopy3d, rotate3d, scale3d, translate3d } from "./transform3d";
-import { AnyVec3 } from "./vec3";
+import { mirror3d, mirrorCopy3d, rotate3d, scale3d, translate3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
+import { AnyVec3, Vec3 } from "./vec3";
 
 export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly fullManifold: ManifoldGc;
@@ -76,6 +76,10 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly volume = (): number => this.fullManifold.internal.volume();
 
 	public readonly translate = (offset: AnyVec3) => translate3d(this, offset);
+	public readonly translateX = (offset: number) => translateX3d(this, offset);
+	public readonly translateY = (offset: number) => translateY3d(this, offset);
+	public readonly translateZ = (offset: number) => translateZ3d(this, offset);
+
 	public readonly rotate = (rotation: AnyVec3) => rotate3d(this, rotation);
 	public readonly mirror = (normal: AnyVec3) => mirror3d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec3) => mirrorCopy3d(this, normal);
@@ -86,6 +90,8 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly union = (...others: readonly Object3D[]) => union3d(this, ...others);
 	public readonly add = (...others: readonly Object3D[]) => this.union(...others);
 	public readonly intersect = (...others: readonly Object3D[]) => intersect3d(this, ...others);
+	public readonly splitByPlane = (planeNormal: AnyVec3, planeOffset: number) => splitByPlane3d(this, planeNormal, planeOffset);
+	public readonly applyOnPointUnsafe = (fn: (vec: Vec3) => AnyVec3) => applyOnPointUnsafe3d(this, fn);
 
 	public readonly setMaterial = (material: Material) => setMaterial3d(this, material);
 }

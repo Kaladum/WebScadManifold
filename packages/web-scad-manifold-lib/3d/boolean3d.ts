@@ -2,6 +2,7 @@ import { Manifold } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 import { Object3D } from "./object3d";
+import { AnyVec3, Vec3 } from "./vec3";
 
 export const difference3d = (current: Object3D, ...others: readonly Object3D[]) => {
 	const allCutAwayManifolds = others.map(v => v.fullManifold.internal);
@@ -57,4 +58,27 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 	return result;
 };
 
-//TODO split,splitByPlane,trimByPlane,compose
+export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): readonly [Object3D, Object3D] => {
+	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => {
+		const sides = manifold.internal.splitByPlane(Vec3.from(planeNormal).xyz(), planeOffset);
+		return [material, sides] as [Material, [Manifold, Manifold]];
+	});
+	const sides = [
+		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[0])]))),
+		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[1])]))),
+	] as const;
+	return sides;
+};
+
+export const applyOnPointUnsafe3d = (current: Object3D, fn: (vec: Vec3) => AnyVec3) => {
+	const result = current.applyOnEachManifold(manifold => manifold.warp(v => {
+		const result = Vec3.from(fn(Vec3.from(v)));
+		// Apply the result back to the original vector (I don't like mutating in place)
+		v[0] = result.x;
+		v[1] = result.y;
+		v[2] = result.z;
+	}));
+	return result;
+};
+
+//TODO split,trimByPlane,compose

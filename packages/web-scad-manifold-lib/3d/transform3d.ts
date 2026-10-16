@@ -6,6 +6,18 @@ export const translate3d = (current: Object3D, offset: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.translate(asSimpleVec3(offset)));
 };
 
+export const translateX3d = (current: Object3D, offset: number) => {
+	return current.applyOnEachManifold(manifold => manifold.translate([offset, 0, 0]));
+};
+
+export const translateY3d = (current: Object3D, offset: number) => {
+	return current.applyOnEachManifold(manifold => manifold.translate([0, offset, 0]));
+};
+
+export const translateZ3d = (current: Object3D, offset: number) => {
+	return current.applyOnEachManifold(manifold => manifold.translate([0, 0, offset]));
+};
+
 export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.rotate(asSimpleVec3(rotation)));
 };
