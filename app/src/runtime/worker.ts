@@ -8,7 +8,7 @@ import * as z from "zod/v4";
 import { parseZodSchemaOrStringError } from "../utils/zod";
 
 //@ts-expect-error This is a virtual URL
-import manifoldWasmUrl from "manifold-3d/manifold.wasm";
+import manifoldWasmUrl from "../../../packages/web-scad-manifold-lib/node_modules/manifold-3d/manifold.wasm";
 
 type MainModuleType = z.infer<typeof WebScadModuleSchema>;
 
