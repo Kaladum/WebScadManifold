@@ -1,6 +1,7 @@
 import { Manifold } from "../internal/bindings";
+import { union3d } from "./boolean3d";
 import { Object3D } from "./object3d";
-import { AnyVec3, asSimpleVec3 } from "./vec3";
+import { AnyVec3, asSimpleVec3, Vec3 } from "./vec3";
 
 export const translate3d = (current: Object3D, offset: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.translate(asSimpleVec3(offset)));
@@ -18,8 +19,21 @@ export const translateZ3d = (current: Object3D, offset: number) => {
 	return current.applyOnEachManifold(manifold => manifold.translate([0, 0, offset]));
 };
 
+export const translateRepeat3d = (current: Object3D, offsets: readonly AnyVec3[]) => {
+	return union3d(...offsets.map(offset => current.translate(offset)));
+};
+
 export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.rotate(asSimpleVec3(rotation)));
+};
+
+export const rotateRepeat3d = (current: Object3D, rotations: readonly AnyVec3[]) => {
+	return union3d(...rotations.map(rotation => current.rotate(rotation)));
+};
+
+export const rotateAroundPoint3d = (current: Object3D, point: AnyVec3, rotation: AnyVec3) => {
+	const offset = Vec3.from(point);
+	return current.translate(offset).rotate(rotation).translate(offset.negate());
 };
 
 export const mirror3d = (current: Object3D, normal: AnyVec3) => {
