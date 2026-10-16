@@ -4,17 +4,17 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "generate-definitions": "npx dts-bundle-generator ./index.ts -o dist/web-scad-manifold-lib.d.ts --no-banner --export-referenced-types false"
+    "generate-definitions": "npx dts-bundle-generator ./index.ts -o dist/web-scad-manifold-lib.d.ts --no-banner --export-referenced-types false --no-check"
   },
   "author": "Kaladum",
   "license": "MIT",
   "description": "",
   "dependencies": {
     "manifold-3d": "^3.5.4",
-    "opentype.js": "^1.3.4"
+    "opentype.js": "^2.0.0"
   },
   "devDependencies": {
-    "@types/opentype.js": "^1.3.8",
+    "@types/opentype.js": "^1.3.10",
     "dts-bundle-generator": "^9.5.1"
   }
 }

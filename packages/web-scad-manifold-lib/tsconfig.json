@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"strict": true,
+		"skipLibCheck": true,
 		"emitDeclarationOnly": true,
 		"declaration": true,
 		"outDir": "dist",
