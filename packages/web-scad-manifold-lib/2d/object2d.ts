@@ -3,7 +3,7 @@ import { CrossSection } from "../internal/bindings";
 import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
-import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d } from "./transform2d";
+import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d } from "./transform2d";
 import { AnyVec2, SimpleVec2 } from "./vec2";
 
 export class Object2D {
