@@ -6,3 +6,5 @@ export * from "./parameter";
 
 export * from "./3d";
 export * from "./2d";
+
+export * from "./utils/math";
