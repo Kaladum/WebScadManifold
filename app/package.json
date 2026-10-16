@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node ./build.mjs --production",
     "serve": "node ./build.mjs --serve",
-    "check": "tsc -watch"
+    "check": "tsc -watch --noEmit"
   },
   "author": "Kaladum",
   "license": "MIT",

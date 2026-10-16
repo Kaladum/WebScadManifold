@@ -4,7 +4,7 @@ import { ModelUiControls } from "./controls";
 import { ModelStateOk } from "../state";
 import { cDiv } from "../utils/jsml";
 
-
+//@ts-expect-error CSS module import
 import "./style/index.css";
 import { JsRunner } from "../runtime/runner";
 

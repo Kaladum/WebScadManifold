@@ -1,7 +1,10 @@
+/// <reference types="@types/wicg-file-system-access" />
+
 import { PersistentDirectoryHandler, StoredDirectoryHandle } from "../db";
 import { cA, cButton, cDiv, cText, uElement } from "../utils/jsml";
 import { ResolvablePromise } from "../utils/resolvablePromise";
 
+//@ts-expect-error CSS module import
 import "./style/index.css";
 
 export async function runProjectSelection(dirDb: PersistentDirectoryHandler): Promise<StoredDirectoryHandle> {
