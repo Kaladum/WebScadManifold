@@ -14,15 +14,18 @@ export type WebScadNumberParameterInternal = z.infer<typeof numberParameterSchem
 const stringParameterSchema = createBaseParameterSchema("string", z.string());
 export type WebScadStringParameterInternal = z.infer<typeof stringParameterSchema>;
 
+const boolParameterSchema = createBaseParameterSchema("boolean", z.boolean());
+export type WebScadBooleanParameterInternal = z.infer<typeof boolParameterSchema>;
 
-export const WebScadSingleParameterSchema = z.union([numberParameterSchema, stringParameterSchema]);
+
+export const WebScadSingleParameterSchema = z.union([numberParameterSchema, stringParameterSchema, boolParameterSchema]);
 
 export type WebScadSingleParameterInternal = z.infer<typeof WebScadSingleParameterSchema>;
 
 export const WebScadMultiParameterSchema = createMultiSchema<WebScadSingleParameterInternal>(WebScadSingleParameterSchema);
 export type WebScadMultiParameterInternal = z.infer<typeof WebScadMultiParameterSchema>;
 
-export type ParameterValue = number | string;
+export type ParameterValue = number | string | boolean;
 
 export class ParameterStore {
 	private readonly lastKnownValues = new Map<string, ParameterValue>();

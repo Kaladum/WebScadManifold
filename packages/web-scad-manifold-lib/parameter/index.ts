@@ -43,4 +43,20 @@ export class StringParameter extends BaseParameter<string, "string"> {
 	}
 }
 
-export type Parameter = NumberParameter | StringParameter;
+export class BooleanParameter extends BaseParameter<boolean, "boolean"> {
+	public readonly parameterType = "boolean";
+
+	public constructor(options: {
+		readonly value: boolean,
+	}) {
+		super(options.value);
+	}
+
+	public trySetValue(value: unknown): boolean {
+		if (typeof value !== "boolean") return false;
+		this._value = value;
+		return true;
+	}
+}
+
+export type Parameter = NumberParameter | StringParameter | BooleanParameter;

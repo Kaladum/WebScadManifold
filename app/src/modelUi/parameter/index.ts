@@ -1,5 +1,5 @@
 import { cDiv, uElement } from "../../utils/jsml";
-import { WebScadMultiParameterInternal, WebScadNumberParameterInternal, WebScadStringParameterInternal } from "../../runtime/type";
+import { WebScadBooleanParameterInternal, WebScadMultiParameterInternal, WebScadNumberParameterInternal, WebScadStringParameterInternal } from "../../runtime/type";
 import { JsRunner } from "../../runtime/runner";
 import { MultiValuePath } from "../../utils/multiObject";
 
@@ -30,6 +30,9 @@ function createParameterUi(parameter: WebScadMultiParameterInternal, path: Multi
 		}
 		if (parameter.parameterType === "string") {
 			return createStringParameter(parameter, path, runner);
+		}
+		if (parameter.parameterType === "boolean") {
+			return createBooleanParameter(parameter, path, runner);
 		}
 	}
 	if (typeof parameter === "object") {
@@ -91,6 +94,28 @@ export function createStringParameter(parameter: WebScadStringParameterInternal,
 
 				v.addEventListener("change", () => {
 					runner.parameters.setValue(v.value, path);
+					runner.requestNewExecution();
+				});
+			},
+		],
+	});
+}
+
+export function createBooleanParameter(parameter: WebScadBooleanParameterInternal, path: MultiValuePath, runner: JsRunner): HTMLInputElement {
+	return uElement(document.createElement("input"), {
+		class: "booleanParameter",
+		custom: [
+			v => {
+				v.type = "checkbox";
+				const loadedValue = runner.parameters.getValueOrUndefined(path);
+				if (typeof loadedValue === "boolean") {
+					v.checked = loadedValue;
+				} else {
+					v.checked = parameter.value;
+				}
+
+				v.addEventListener("change", () => {
+					runner.parameters.setValue(v.checked, path);
 					runner.requestNewExecution();
 				});
 			},
