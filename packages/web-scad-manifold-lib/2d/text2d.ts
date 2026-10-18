@@ -15,7 +15,7 @@ export class Font {
 		return new Font(arrayBuffer);
 	}
 
-	public text2d = (text: string, fontSize: number, options: Text2dOptions = {}): Object2D => {
+	public readonly text2d = (text: string, fontSize: number, options: Text2dOptions = {}): Object2D => {
 		const renderOptions: opentype.RenderOptions = {
 			kerning: options.kerning,
 		};
@@ -26,10 +26,10 @@ export class Font {
 
 		const bounds = result.bounds();
 		if (options.horizontalCenter) {
-			result = result.translate([-(bounds.min[0] + bounds.max[0]) / 2, 0]);
+			result = result.translateX(-(bounds.min[0] + bounds.max[0]) / 2);
 		}
 		if (options.verticalCenter) {
-			result = result.translate([0, -(bounds.min[1] + bounds.max[1]) / 2]);
+			result = result.translateY(-(bounds.min[1] + bounds.max[1]) / 2);
 		}
 		return result;
 	};
