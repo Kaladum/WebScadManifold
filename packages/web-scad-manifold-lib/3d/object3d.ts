@@ -2,7 +2,7 @@ import { WebScadExportable, WebScadMesh, WebScadObject } from "../common";
 import { Manifold, Mesh } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
-import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByPlane3d, union3d } from "./boolean3d";
+import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByPlane3d, trimByPlane3d, union3d } from "./boolean3d";
 import { setMaterial3d } from "./material3d";
 import { mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, scale3d, translate3d, translateRepeat3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
 import { AnyVec3, Vec3 } from "./vec3";
@@ -99,6 +99,7 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly intersect = (...others: readonly Object3D[]) => intersect3d(this, ...others);
 
 	public readonly splitByPlane = (planeNormal: AnyVec3, planeOffset: number) => splitByPlane3d(this, planeNormal, planeOffset);
+	public readonly trimByPlane = (planeNormal: AnyVec3, planeOffset: number) => trimByPlane3d(this, planeNormal, planeOffset);
 
 	public readonly applyOnPointUnsafe = (fn: (vec: Vec3) => AnyVec3) => applyOnPointUnsafe3d(this, fn);
 

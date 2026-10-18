@@ -59,15 +59,19 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 };
 
 export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): readonly [Object3D, Object3D] => {
-	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => {
-		const sides = manifold.internal.splitByPlane(asSimpleVec3(planeNormal), planeOffset);
-		return [material, sides] as [Material, [Manifold, Manifold]];
-	});
+	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => [
+		material,
+		manifold.internal.splitByPlane(asSimpleVec3(planeNormal), planeOffset),
+	] as const);
 	const sides = [
 		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[0])]))),
 		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[1])]))),
 	] as const;
 	return sides;
+};
+
+export const trimByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): Object3D => {
+	return current.applyOnEachManifold(manifold => manifold.trimByPlane(asSimpleVec3(planeNormal), planeOffset));
 };
 
 export const applyOnPointUnsafe3d = (current: Object3D, fn: (vec: Vec3) => AnyVec3) => {
@@ -81,4 +85,4 @@ export const applyOnPointUnsafe3d = (current: Object3D, fn: (vec: Vec3) => AnyVe
 	return result;
 };
 
-//TODO split,trimByPlane,compose
+//TODO split,compose
