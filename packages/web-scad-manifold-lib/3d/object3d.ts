@@ -4,7 +4,7 @@ import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByPlane3d, trimByPlane3d, union3d } from "./boolean3d";
 import { setMaterial3d } from "./material3d";
-import { mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, scale3d, translate3d, translateRepeat3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
+import { mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, rotateRepeatX3d, rotateRepeatY3d, rotateRepeatZ3d, rotateX3d, rotateY3d, rotateZ3d, scale3d, translate3d, translateRepeat3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
 import { AnyVec3, Vec3 } from "./vec3";
 
 export class Object3D implements WebScadExportable<WebScadObject> {
@@ -86,7 +86,15 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly translateRepeatZ = (offsets: readonly number[]) => translateRepeatZ3d(this, offsets);
 
 	public readonly rotate = (rotation: AnyVec3) => rotate3d(this, rotation);
+	public readonly rotateX = (rotation: number) => rotateX3d(this, rotation);
+	public readonly rotateY = (rotation: number) => rotateY3d(this, rotation);
+	public readonly rotateZ = (rotation: number) => rotateZ3d(this, rotation);
+
 	public readonly rotateRepeat = (rotations: readonly AnyVec3[]) => rotateRepeat3d(this, rotations);
+	public readonly rotateRepeatX = (rotation: readonly number[]) => rotateRepeatX3d(this, rotation);
+	public readonly rotateRepeatY = (rotation: readonly number[]) => rotateRepeatY3d(this, rotation);
+	public readonly rotateRepeatZ = (rotation: readonly number[]) => rotateRepeatZ3d(this, rotation);
+
 	public readonly rotateAround = (point: AnyVec3, rotation: AnyVec3) => rotateAround3d(this, point, rotation);
 	public readonly mirror = (normal: AnyVec3) => mirror3d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec3) => mirrorCopy3d(this, normal);

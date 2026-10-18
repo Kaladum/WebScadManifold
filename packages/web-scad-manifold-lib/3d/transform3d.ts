@@ -39,8 +39,32 @@ export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.rotate(asSimpleVec3(rotation)));
 };
 
+export const rotateX3d = (current: Object3D, rotation: number) => {
+	return current.applyOnEachManifold(manifold => manifold.rotate([rotation, 0, 0]));
+};
+
+export const rotateY3d = (current: Object3D, rotation: number) => {
+	return current.applyOnEachManifold(manifold => manifold.rotate([0, rotation, 0]));
+};
+
+export const rotateZ3d = (current: Object3D, rotation: number) => {
+	return current.applyOnEachManifold(manifold => manifold.rotate([0, 0, rotation]));
+};
+
 export const rotateRepeat3d = (current: Object3D, rotations: readonly AnyVec3[]) => {
 	return union3d(...rotations.map(rotation => current.rotate(rotation)));
+};
+
+export const rotateRepeatX3d = (current: Object3D, rotations: readonly number[]) => {
+	return union3d(...rotations.map(rotation => current.rotateX(rotation)));
+};
+
+export const rotateRepeatY3d = (current: Object3D, rotations: readonly number[]) => {
+	return union3d(...rotations.map(rotation => current.rotateY(rotation)));
+};
+
+export const rotateRepeatZ3d = (current: Object3D, rotations: readonly number[]) => {
+	return union3d(...rotations.map(rotation => current.rotateZ(rotation)));
 };
 
 export const rotateAround3d = (current: Object3D, point: AnyVec3, rotation: AnyVec3) => {
