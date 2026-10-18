@@ -25,6 +25,14 @@ export const translateRepeat2d = (current: Object2D, offsets: readonly AnyVec2[]
 	return union2d(...offsets.map(offset => current.translate(offset)));
 };
 
+export const translateRepeatX2d = (current: Object2D, offsets: readonly number[]) => {
+	return union2d(...offsets.map(offset => current.translateX(offset)));
+};
+
+export const translateRepeatY2d = (current: Object2D, offsets: readonly number[]) => {
+	return union2d(...offsets.map(offset => current.translateY(offset)));
+};
+
 export const rotate2d = (current: Object2D, rotation: number) => {
 	return current.applyRaw(manifold => manifold.rotate(rotation));
 };

@@ -1,9 +1,10 @@
 import { CrossSectionGc } from "../internal";
 import { CrossSection } from "../internal/bindings";
+import { Axis } from "../utils/math";
 import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
-import { extrude2d } from "./extrude2d";
+import { extrude2d, extrudeLinear2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
-import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d } from "./transform2d";
+import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d, translateRepeatY2d, translateRepeatX2d } from "./transform2d";
 import { AnyVec2, asSimpleVec2 } from "./vec2";
 
 export type FillRule = "EvenOdd" | "NonZero" | "Positive" | "Negative";
@@ -40,6 +41,8 @@ export class Object2D {
 	public readonly translateX = (offset: number) => translateX2d(this, offset);
 	public readonly translateY = (offset: number) => translateY2d(this, offset);
 	public readonly translateRepeat = (offsets: readonly AnyVec2[]) => translateRepeat2d(this, offsets);
+	public readonly translateRepeatX = (offsets: readonly number[]) => translateRepeatX2d(this, offsets);
+	public readonly translateRepeatY = (offsets: readonly number[]) => translateRepeatY2d(this, offsets);
 	public readonly rotate = (rotation: number) => rotate2d(this, rotation);
 	public readonly rotateRepeat = (rotations: readonly number[]) => rotateRepeat2d(this, rotations);
 	public readonly rotateAround = (point: AnyVec2, rotation: number) => rotateAround2d(this, point, rotation);
@@ -54,7 +57,9 @@ export class Object2D {
 	public readonly intersect = (...others: readonly Object2D[]) => intersect2d(this, ...others);
 	public readonly decompose = (): Object2D[] => decompose2d(this);
 
+	//Todo improve options
 	public readonly extrude = (height: number, nDivisions?: number, twistDegrees?: number, scaleTop?: AnyVec2 | number, center?: boolean) => extrude2d(this, height, nDivisions, twistDegrees, scaleTop, center);
+	public readonly extrudeLinear = (amount = 1, axis: Axis = "Z", direction: "+" | "-" | "+-" = "+") => extrudeLinear2d(this, amount, axis, direction);
 }
 
 export interface Rect2d {

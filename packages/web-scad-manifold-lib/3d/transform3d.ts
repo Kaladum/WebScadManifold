@@ -23,6 +23,18 @@ export const translateRepeat3d = (current: Object3D, offsets: readonly AnyVec3[]
 	return union3d(...offsets.map(offset => current.translate(offset)));
 };
 
+export const translateRepeatX3d = (current: Object3D, offsets: readonly number[]) => {
+	return union3d(...offsets.map(offset => current.translateX(offset)));
+};
+
+export const translateRepeatY3d = (current: Object3D, offsets: readonly number[]) => {
+	return union3d(...offsets.map(offset => current.translateY(offset)));
+};
+
+export const translateRepeatZ3d = (current: Object3D, offsets: readonly number[]) => {
+	return union3d(...offsets.map(offset => current.translateZ(offset)));
+};
+
 export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.rotate(asSimpleVec3(rotation)));
 };
