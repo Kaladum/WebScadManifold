@@ -4,7 +4,7 @@ import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
 import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d } from "./transform2d";
-import { AnyVec2, Vec2 } from "./vec2";
+import { AnyVec2, asSimpleVec2 } from "./vec2";
 
 export type FillRule = "EvenOdd" | "NonZero" | "Positive" | "Negative";
 
@@ -20,7 +20,7 @@ export class Object2D {
 	}
 
 	public static fromPolygons(polygons: readonly (readonly AnyVec2[])[], fillRule?: FillRule): Object2D {
-		const data = polygons.map(p => p.map(v => Vec2.from(v).xy()));
+		const data = polygons.map(p => p.map(v => asSimpleVec2(v) as [number, number]));//TODO enable readonly Vec in Manifold
 		const crossSection = new CrossSection(data, fillRule);
 		return Object2D.fromCrossSection(crossSection);
 	}

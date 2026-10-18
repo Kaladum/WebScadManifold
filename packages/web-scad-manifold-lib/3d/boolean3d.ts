@@ -2,7 +2,7 @@ import { Manifold } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 import { Object3D } from "./object3d";
-import { AnyVec3, Vec3 } from "./vec3";
+import { AnyVec3, asSimpleVec3, Vec3 } from "./vec3";
 
 export const difference3d = (current: Object3D, ...others: readonly Object3D[]) => {
 	const allCutAwayManifolds = others.map(v => v.fullManifold.internal);
@@ -60,7 +60,7 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 
 export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): readonly [Object3D, Object3D] => {
 	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => {
-		const sides = manifold.internal.splitByPlane(Vec3.from(planeNormal).xyz(), planeOffset);
+		const sides = manifold.internal.splitByPlane(asSimpleVec3(planeNormal), planeOffset);
 		return [material, sides] as [Material, [Manifold, Manifold]];
 	});
 	const sides = [
