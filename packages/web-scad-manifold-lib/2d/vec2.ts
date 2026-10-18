@@ -23,6 +23,15 @@ export class Vec2 {
 	public readonly subtract = (other: Vec2): Vec2 => new Vec2(this.x - other.x, this.y - other.y);
 
 	public readonly dot = (other: Vec2): number => this.x * other.x + this.y * other.y;
+
+	public readonly negate = (): Vec2 => new Vec2(-this.x, -this.y);
+
+	public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {
+		return new Vec2(
+			a.x + (b.x - a.x) * t,
+			a.y + (b.y - a.y) * t,
+		);
+	}
 }
 
 export type AnyVec2 = SimpleVec2 | Vec2;

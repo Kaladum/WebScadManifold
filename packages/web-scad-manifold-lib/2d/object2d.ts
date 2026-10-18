@@ -3,8 +3,10 @@ import { CrossSection } from "../internal/bindings";
 import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
-import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d } from "./transform2d";
-import { AnyVec2, SimpleVec2 } from "./vec2";
+import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d } from "./transform2d";
+import { AnyVec2, Vec2 } from "./vec2";
+
+export type FillRule = "EvenOdd" | "NonZero" | "Positive" | "Negative";
 
 export class Object2D {
 	public constructor(
@@ -13,8 +15,13 @@ export class Object2D {
 
 	public static fromCrossSection = (crossSection: CrossSection) => new Object2D(new CrossSectionGc(crossSection));
 
-	public static fromPolygons(polygons: readonly SimpleVec2[] | readonly SimpleVec2[][], fillRule?: "EvenOdd" | "NonZero" | "Positive" | "Negative"): Object2D {
-		const crossSection = new CrossSection(polygons as [number, number][] | [number, number][][], fillRule);
+	public static fromPolygon(polygon: readonly AnyVec2[], fillRule?: FillRule): Object2D {
+		return Object2D.fromPolygons([polygon], fillRule);
+	}
+
+	public static fromPolygons(polygons: readonly (readonly AnyVec2[])[], fillRule?: FillRule): Object2D {
+		const data = polygons.map(p => p.map(v => Vec2.from(v).xy()));
+		const crossSection = new CrossSection(data, fillRule);
 		return Object2D.fromCrossSection(crossSection);
 	}
 
@@ -35,6 +42,7 @@ export class Object2D {
 	public readonly translateRepeat = (offsets: readonly AnyVec2[]) => translateRepeat2d(this, offsets);
 	public readonly rotate = (rotation: number) => rotate2d(this, rotation);
 	public readonly rotateRepeat = (rotations: readonly number[]) => rotateRepeat2d(this, rotations);
+	public readonly rotateAround = (point: AnyVec2, rotation: number) => rotateAround2d(this, point, rotation);
 	public readonly mirror = (normal: AnyVec2) => mirror2d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec2) => mirrorCopy2d(this, normal);
 	public readonly scale = (scale: number | AnyVec2) => scale2d(this, scale);

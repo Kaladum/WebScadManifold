@@ -2,7 +2,7 @@ import { Mat3 } from "manifold-3d";
 import { CrossSection } from "../internal/bindings";
 import { Matrix3 } from "./matrix";
 import { Object2D } from "./object2d";
-import { AnyVec2, asSimpleVec2 } from "./vec2";
+import { AnyVec2, asSimpleVec2, Vec2 } from "./vec2";
 import { union2d } from "./boolean2d";
 
 export const transform2d = (current: Object2D, matrix: Matrix3) => {
@@ -31,6 +31,11 @@ export const rotate2d = (current: Object2D, rotation: number) => {
 
 export const rotateRepeat2d = (current: Object2D, rotations: readonly number[]) => {
 	return union2d(...rotations.map(rotation => current.rotate(rotation)));
+};
+
+export const rotateAround2d = (current: Object2D, point: AnyVec2, rotation: number) => {
+	const offset = Vec2.from(point);
+	return current.translate(offset).rotate(rotation).translate(offset.negate());
 };
 
 export const mirror2d = (current: Object2D, normal: AnyVec2) => {

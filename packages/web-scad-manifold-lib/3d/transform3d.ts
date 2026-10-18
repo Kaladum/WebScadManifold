@@ -31,7 +31,7 @@ export const rotateRepeat3d = (current: Object3D, rotations: readonly AnyVec3[])
 	return union3d(...rotations.map(rotation => current.rotate(rotation)));
 };
 
-export const rotateAroundPoint3d = (current: Object3D, point: AnyVec3, rotation: AnyVec3) => {
+export const rotateAround3d = (current: Object3D, point: AnyVec3, rotation: AnyVec3) => {
 	const offset = Vec3.from(point);
 	return current.translate(offset).rotate(rotation).translate(offset.negate());
 };
