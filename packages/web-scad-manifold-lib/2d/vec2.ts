@@ -18,19 +18,34 @@ export class Vec2 {
 		}
 	}
 
-	public readonly scale = (factor: number): Vec2 => new Vec2(this.x * factor, this.y * factor);
-
+	public readonly add = (other: Vec2): Vec2 => new Vec2(this.x + other.x, this.y + other.y);
 	public readonly subtract = (other: Vec2): Vec2 => new Vec2(this.x - other.x, this.y - other.y);
+	public readonly negate = (): Vec2 => new Vec2(-this.x, -this.y);
+
+	public readonly scale = (factor: number): Vec2 => new Vec2(this.x * factor, this.y * factor);
 
 	public readonly dot = (other: Vec2): number => this.x * other.x + this.y * other.y;
 
-	public readonly negate = (): Vec2 => new Vec2(-this.x, -this.y);
+	public readonly len = (): number => Math.sqrt(this.x * this.x + this.y * this.y);
+	public readonly lenSqr = (): number => this.x * this.x + this.y * this.y;
+
+	public readonly normalize = (): Vec2 => {
+		const length = this.len();
+		if (length === 0) {
+			throw new Error("Cannot normalize a zero-length vector");
+		}
+		return new Vec2(this.x / length, this.y / length);
+	};
 
 	public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {
 		return new Vec2(
 			a.x + (b.x - a.x) * t,
 			a.y + (b.y - a.y) * t,
 		);
+	}
+
+	public static fromAToB(a: Vec2, b: Vec2): Vec2 {
+		return new Vec2(b.x - a.x, b.y - a.y);
 	}
 }
 

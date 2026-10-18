@@ -15,11 +15,26 @@ export class Vec3 {
 
 	public readonly scale = (factor: number): Vec3 => new Vec3(this.x * factor, this.y * factor, this.z * factor);
 
+	public readonly add = (other: Vec3): Vec3 => new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
 	public readonly subtract = (other: Vec3): Vec3 => new Vec3(this.x - other.x, this.y - other.y, this.z - other.z);
+	public readonly negate = (): Vec3 => new Vec3(-this.x, -this.y, -this.z);
 
 	public readonly dot = (other: Vec3): number => this.x * other.x + this.y * other.y + this.z * other.z;
 
-	public readonly negate = (): Vec3 => new Vec3(-this.x, -this.y, -this.z);
+	public readonly len = (): number => Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+	public readonly lenSqr = (): number => this.x * this.x + this.y * this.y + this.z * this.z;
+
+	public readonly normalize = (): Vec3 => {
+		const length = this.len();
+		if (length === 0) {
+			throw new Error("Cannot normalize a zero-length vector");
+		}
+		return new Vec3(this.x / length, this.y / length, this.z / length);
+	};
+
+	public static fromAToB(a: Vec3, b: Vec3): Vec3 {
+		return new Vec3(b.x - a.x, b.y - a.y, b.z - a.z);
+	}
 
 	public static from(vec: AnyVec3): Vec3 {
 		if (vec instanceof Vec3) {
