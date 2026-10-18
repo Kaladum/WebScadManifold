@@ -15,7 +15,7 @@ type MainModuleType = z.infer<typeof WebScadModuleSchema>;
 export class JsRunnerWorker {
 	public static async create(content: Uint8Array) {
 		let mainModuleRaw: unknown;
-		const url = URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
+		const url = URL.createObjectURL(new Blob([content.buffer as ArrayBuffer], { type: "application/javascript" }));//Without this cast TS has some DOM vs Node problem
 		try {
 			mainModuleRaw = await import(url);
 		} finally {
