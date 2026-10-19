@@ -1,12 +1,20 @@
 # WebScad-Manifold
 
+<img src="./app/public/logo.svg" width="150">
+
 This is an early preview. Please use with caution.
 
-WebScad-Manifold is a library and an editor for creating 3d models using js and ts. It is heavily inspired by [OpenSCAD](https://openscad.org/) and [jscad.app](https://jscad.app/). The [manifold-3d](https://www.npmjs.com/package/manifold-3d) library handles all geometry calculations.
+WebScad-Manifold is a library and an editor for creating 3d models using js and
+ts. It is heavily inspired by [OpenSCAD](https://openscad.org/) and
+[jscad.app](https://jscad.app/). The
+[manifold-3d](https://www.npmjs.com/package/manifold-3d) library handles all
+geometry calculations.
 
-You can use this project directly in the [browser](https://kaladum.github.io/WebScadManifold/).
+You can use this project directly in the
+[browser](https://kaladum.github.io/WebScadManifold/).
 
 ## Feature List
+
 - [x] Online 3D Model Viewer
 - [x] 3MF Export
 - [x] Execution of TypeScript Code

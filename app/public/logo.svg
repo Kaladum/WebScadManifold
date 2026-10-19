@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img"
+  aria-labelledby="logo-title">
+  <title id="logo-title">WebScadManifold logo</title>
+  <defs>
+    <linearGradient id="top-face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#48D7C2" />
+      <stop offset="1" stop-color="#20AFAE" />
+    </linearGradient>
+    <linearGradient id="left-face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#528CE8" />
+      <stop offset="1" stop-color="#3468C5" />
+    </linearGradient>
+    <linearGradient id="right-face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8260E8" />
+      <stop offset="1" stop-color="#6041BE" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(256 256) scale(1.376) translate(-256 -246)">
+    <g stroke="#17233D" stroke-width="12" stroke-linejoin="round">
+      <path d="M256 66 412 156 256 246 100 156Z" fill="url(#top-face)" />
+      <path d="M100 156 256 246 256 426 100 336Z" fill="url(#left-face)" />
+      <path d="M412 156 256 246 256 426 412 336Z" fill="url(#right-face)" />
+      <path d="M100 156 256 246 412 156M256 246v180" fill="none" />
+    </g>
+
+    <g fill="#FFF" font-family="Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+      <text x="256" y="209" font-size="130">W</text>
+      <text x="177" y="335" font-size="130">S</text>
+      <text x="335" y="335" font-size="130">M</text>
+    </g>
+  </g>
+</svg>
