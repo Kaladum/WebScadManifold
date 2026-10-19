@@ -1,5 +1,5 @@
-import { expose, proxy } from "comlink";
-import { MultiValue, Parameter } from "web-scad-manifold-lib";
+import { expose, proxy, transfer } from "comlink";
+import { MultiValue, Parameter, WebScadObject } from "web-scad-manifold-lib";
 import { WebScadModuleSchema, WebScadResultSchema } from "./typeCheck";
 import { WebScadRunResult } from "./transfer";
 import { iterateMultiValueRecursive } from "../utils/multiObject";
@@ -18,6 +18,9 @@ export class JsRunnerWorker {
 		const url = URL.createObjectURL(new Blob([content.buffer as ArrayBuffer], { type: "application/javascript" }));//Without this cast TS has some DOM vs Node problem
 		try {
 			mainModuleRaw = await import(url);
+		} catch (e) {
+			console.log(e);
+			throw e;
 		} finally {
 			URL.revokeObjectURL(url);
 		}
@@ -25,6 +28,7 @@ export class JsRunnerWorker {
 			const mainModule = parseZodSchemaOrStringError(WebScadModuleSchema, mainModuleRaw);
 			return proxy(new JsRunnerWorker(mainModule, (mainModuleRaw as MainModuleType)?.parameters));
 		} catch (e) {
+			console.log(e);
 			throw new Error(String(e));//Make sure, that the error is transferable
 		}
 	}
@@ -39,11 +43,34 @@ export class JsRunnerWorker {
 			const resultRaw = await this.mainModule.main();
 
 			const result = parseZodSchemaOrStringError(WebScadResultSchema, resultRaw) ?? undefined;
-			return {
+			const transferable: Transferable[] = [];
+
+			const addToTransferable = (item: MultiValue<WebScadObject>) => {
+				if (item instanceof Uint32Array) {
+					transferable.push(item.buffer);
+				} else if (item instanceof Float32Array) {
+					transferable.push(item.buffer);
+				} else if (item instanceof Array) {
+					for (const subItem of item) {
+						addToTransferable(subItem);
+					}
+				} else if (item instanceof Object) {
+					for (const subItem of Object.values(item)) {
+						addToTransferable(subItem);
+					}
+				};
+			};
+
+			if (result !== undefined) {
+				addToTransferable(result);
+			}
+
+			return transfer({
 				model: result,
 				parameters: this.mainModule.parameters,
-			};
+			}, transferable);
 		} catch (e) {
+			console.log(e);
 			throw new Error(String(e));//Make sure, that the error is transferable
 		}
 	}
