@@ -70,7 +70,10 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 
 	public readonly apply = <T>(fn: (item: Object3D) => T) => fn(this);
 
-	public readonly boundingBox = (): Box3d => this.fullManifold.internal.boundingBox();
+	public readonly boundingBox = (): BoundingBox3d => {
+		const box = this.fullManifold.internal.boundingBox();
+		return new BoundingBox3d(new Vec3(...box.min), new Vec3(...box.max));
+	};
 	public readonly isEmpty = (): boolean => this.fullManifold.internal.isEmpty();
 	public readonly surfaceArea = (): number => this.fullManifold.internal.surfaceArea();
 	public readonly volume = (): number => this.fullManifold.internal.volume();
@@ -115,7 +118,23 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly setMaterial = (material: Material) => setMaterial3d(this, material);
 }
 
-export interface Box3d {
-	min: [number, number, number],
-	max: [number, number, number],
-};
+export class BoundingBox3d {
+	public readonly min: Vec3;
+	public readonly max: Vec3;
+
+	public constructor(
+		min: AnyVec3,
+		max: AnyVec3,
+	) {
+		this.min = Vec3.from(min);
+		this.max = Vec3.from(max);
+	}
+
+	public readonly size = () => this.max.subtract(this.min);
+	public readonly center = () => this.min.add(this.size().scale(0.5));
+
+	public get volume() {
+		const size = this.size();
+		return size.x * size.y * size.z;
+	}
+}
