@@ -4,7 +4,6 @@ import { Xml3mfHeader } from "./header";
 import { Child3mf, Component3mf } from "./component";
 
 export class Xml3MfFile {
-	public precision = 17;
 	public readonly header = new Xml3mfHeader();
 
 	public readonly meshes: Mesh3mf[] = [];
@@ -15,7 +14,7 @@ export class Xml3MfFile {
 		const data: Xml3mf = {
 			"?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
 			model: {
-				"@_unit": this.header.unit ?? "millimeter",
+				"@_unit": this.header.unit,
 				"@_xml:lang": "en-US",
 				"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
 				"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
@@ -23,7 +22,7 @@ export class Xml3MfFile {
 				resources: {
 					object: [
 						//Mesh objects
-						...this.meshes.map(v => v.generate(this.precision)),
+						...this.meshes.map(v => v.generate()),
 						//Component objects
 						...this.components.map(v => v.generate()),
 					],
@@ -51,13 +50,13 @@ export class Mesh3mf {
 		public name?: string,
 	) { }
 
-	public generate(precision: number): Xml3mfMeshObject {
+	public generate(): Xml3mfMeshObject {
 		const xmlVertex: Xml3mfVertex[] = [];
 		for (let i = 0; i < this.vertices.length; i += 3) {
 			xmlVertex.push({
-				"@_x": this.vertices[i].toFixed(precision),
-				"@_y": this.vertices[i + 1].toFixed(precision),
-				"@_z": this.vertices[i + 2].toFixed(precision),
+				"@_x": this.vertices[i].toString(),
+				"@_y": this.vertices[i + 1].toString(),
+				"@_z": this.vertices[i + 2].toString(),
 			});
 		}
 

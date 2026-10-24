@@ -4,8 +4,8 @@ import { Xml3MfFile } from "./3mfXmlFile";
 
 import { zipSync, Zippable } from "fflate";
 
-const MODEL_PATH = "3D/3dmodel.model";
-const THUMBNAIL_PATH = "Metadata/thumbnail.png";
+const MODEL_PATH = "/3D/3dmodel.model";
+const THUMBNAIL_PATH = "/Metadata/thumbnail.png";
 
 export class File3mf extends Xml3MfFile {
 	public thumbnail?: Uint8Array;
@@ -14,7 +14,7 @@ export class File3mf extends Xml3MfFile {
 		const content: Zippable = {};
 		const utf8Encoder = new TextEncoder();
 
-		content[fileForContentTypes.name] = [utf8Encoder.encode(fileForContentTypes.content), { level: 9 }];
+		content[fileForContentTypes.name] = [utf8Encoder.encode(fileForContentTypes.content), { level: 8 }];
 
 		const relationships: Xml3mfRelationFile = {
 			"?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
@@ -35,8 +35,8 @@ export class File3mf extends Xml3MfFile {
 			);
 		}
 
-		content[MODEL_PATH] = [utf8Encoder.encode(this.generate()), { level: 9 }];
-		content["_rels/.rels"] = [utf8Encoder.encode(relationshipsXmlBuilder.build(relationships)), { level: 9 }];
+		content[MODEL_PATH] = [utf8Encoder.encode(this.generate()), { level: 8 }];
+		content["_rels/.rels"] = [utf8Encoder.encode(relationshipsXmlBuilder.build(relationships)), { level: 8 }];
 
 		return zipSync(content);
 	}

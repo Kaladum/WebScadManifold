@@ -31,4 +31,4 @@ export class Xml3mfHeader {
 	}
 }
 
-export const toDate3mf = (d: Date): string => (d ? d.toISOString().substring(0, 10) : "");
+export const toDate3mf = (d: Date): string => d.toISOString().substring(0, 10);

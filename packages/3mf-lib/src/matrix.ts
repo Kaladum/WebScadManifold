@@ -16,12 +16,4 @@ export type Mat4 = readonly [
  * where each value is a decimal number of arbitrary precision.
  * @return string transform attribute value
 */
-export function matrix2str(m: Mat4): string {
-	let str = "";
-	for (let i = 0; i < 16; i++) {
-		if (i % 4 === 3) continue;
-		if (i > 0) str += " ";
-		str += m[i] || 0;
-	}
-	return str;
-}
+export const matrix2str = (m: Mat4) => `${m[0]} ${m[1]} ${m[2]} ${m[4]} ${m[5]} ${m[6]} ${m[8]} ${m[9]} ${m[10]} ${m[12]} ${m[13]} ${m[14]}`;
