@@ -1,4 +1,4 @@
-import * as z from "zod/v4";
+import * as z from "zod";
 
 export function parseZodSchemaOrStringError<T extends z.ZodType>(schema: T, value: unknown): z.infer<T> {
 	const parsed = schema.safeParse(value);

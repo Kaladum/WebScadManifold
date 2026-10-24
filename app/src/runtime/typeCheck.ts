@@ -1,5 +1,5 @@
 import { WebScadExportable, WebScadObject } from "web-scad-manifold-lib";
-import * as z from "zod/v4";
+import * as z from "zod";
 import { createMultiSchema } from "./type/multi";
 import { WebScadMultiParameterSchema } from "./type/parameter";
 

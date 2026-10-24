@@ -1,5 +1,5 @@
 import { MultiValue } from "web-scad-manifold-lib";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 export function createMultiSchema<T>(itemSchema: z.ZodType<T>): z.ZodType<MultiValue<T>> {
 	const result: z.ZodType<MultiValue<T>> = z.union([

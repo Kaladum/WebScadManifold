@@ -4,7 +4,7 @@ import { WebScadModuleSchema, WebScadResultSchema } from "./typeCheck";
 import { WebScadRunResult } from "./transfer";
 import { iterateMultiValueRecursive } from "../utils/multiObject";
 import { ParameterValue, WebScadSingleParameterInternal } from "./type";
-import * as z from "zod/v4";
+import * as z from "zod";
 import { parseZodSchemaOrStringError } from "../utils/zod";
 
 //@ts-expect-error This is a virtual URL
