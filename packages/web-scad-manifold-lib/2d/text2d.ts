@@ -26,10 +26,10 @@ export class Font {
 
 		const bounds = result.bounds();
 		if (options.horizontalCenter) {
-			result = result.translateX(-(bounds.min[0] + bounds.max[0]) / 2);
+			result = result.translateX(-bounds.center().x);
 		}
 		if (options.verticalCenter) {
-			result = result.translateY(-(bounds.min[1] + bounds.max[1]) / 2);
+			result = result.translateY(-bounds.center().y);
 		}
 		return result;
 	};

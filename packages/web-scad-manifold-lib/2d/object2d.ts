@@ -5,7 +5,7 @@ import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d, extrudeLinear2d } from "./extrude2d";
 import { Matrix3 } from "./matrix";
 import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d, translateRepeatY2d, translateRepeatX2d } from "./transform2d";
-import { AnyVec2, asSimpleVec2 } from "./vec2";
+import { AnyVec2, asSimpleVec2, Vec2 } from "./vec2";
 
 export type FillRule = "EvenOdd" | "NonZero" | "Positive" | "Negative";
 
@@ -32,7 +32,10 @@ export class Object2D {
 
 	public readonly apply = <T>(fn: (item: Object2D) => T) => fn(this);
 
-	public readonly bounds = (): Rect2d => this.crossSection.internal.bounds();
+	public readonly bounds = (): Rect2d => {
+		const bounds = this.crossSection.internal.bounds();
+		return new Rect2d(bounds.min, bounds.max);
+	};
 	public readonly isEmpty = (): boolean => this.crossSection.internal.isEmpty();
 	public readonly area = (): number => this.crossSection.internal.area();
 
@@ -62,7 +65,23 @@ export class Object2D {
 	public readonly extrudeLinear = (amount = 1, axis: Axis = "Z", direction: "+" | "-" | "+-" = "+") => extrudeLinear2d(this, amount, axis, direction);
 }
 
-export interface Rect2d {
-	min: [number, number],
-	max: [number, number],
-};
+export class Rect2d {
+	public readonly min: Vec2;
+	public readonly max: Vec2;
+
+	public constructor(
+		min: AnyVec2,
+		max: AnyVec2,
+	) {
+		this.min = Vec2.from(min);
+		this.max = Vec2.from(max);
+	}
+
+	public readonly size = () => this.max.subtract(this.min);
+	public readonly center = () => this.min.add(this.size().scale(0.5));
+
+	public get area() {
+		const size = this.size();
+		return size.x * size.y;
+	}
+}
