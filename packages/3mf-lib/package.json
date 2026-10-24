@@ -7,6 +7,7 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "fast-xml-builder": "^1.3.1",
     "fast-xml-parser": "^5.2.4"
   }
 }

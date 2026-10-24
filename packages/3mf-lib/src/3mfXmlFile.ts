@@ -1,4 +1,4 @@
-import { XMLBuilder } from "fast-xml-parser";
+import XMLBuilder from "fast-xml-builder";
 import { Xml3mf, Xml3mfMeshObject, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf";
 import { Xml3mfHeader } from "./header";
 import { Child3mf, Component3mf } from "./component";

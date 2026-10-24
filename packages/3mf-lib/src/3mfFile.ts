@@ -1,4 +1,4 @@
-import { XMLBuilder } from "fast-xml-parser";
+import XMLBuilder from "fast-xml-builder";
 import { Xml3mfRelationFile } from "../xml-schema-3mf";
 import { Xml3MfFile } from "./3mfXmlFile";
 
