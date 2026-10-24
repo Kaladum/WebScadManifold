@@ -28,5 +28,8 @@ You can use this project directly in the
 - [ ] Command Line usage
 - [ ] Support for additional libraries
 - [ ] Animations
+- [ ] STL Export
 - [ ] Additional export formats
+- [ ] 3FM Model import
+- [ ] STL Model import
 - [ ] Better UI Tools (Grid / Measure Tools)
