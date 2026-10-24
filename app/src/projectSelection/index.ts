@@ -3,6 +3,7 @@
 import { PersistentDirectoryHandler, StoredDirectoryHandle } from "../db";
 import { cA, cButton, cDiv, cText, uElement } from "../utils/jsml";
 import { ResolvablePromise } from "../utils/resolvablePromise";
+import { unzip } from "fflate";
 
 //@ts-expect-error CSS module import
 import "./style/index.css";
@@ -75,6 +76,22 @@ async function runSingleProjectSelection(dirDb: PersistentDirectoryHandler, cont
 				}
 			},
 		}),
+		cButton({
+			text: "Init new project in local folder",
+			onClickHandled: async () => {
+				try {
+					const dir = await window.showDirectoryPicker({
+						mode: "readwrite",
+					});
+					await initNewProjectInLocalFolder(dir);
+					await dirDb.add(dir);
+					selectedResult.resolve(undefined);
+				} catch (e) {
+					alert("Failed to initialize new project: " + e);
+					console.info(e);//TODO
+				}
+			},
+		}),
 		cDiv({
 			class: "project-list",
 			children: entries.map(showDirectoryHandle),
@@ -109,3 +126,56 @@ const formatDate = (date: Date): string => {
 
 	return `${year}-${month}-${day}`;
 };
+
+const initNewProjectInLocalFolder = async (handle: FileSystemDirectoryHandle) => {
+	for await (const _ of handle.entries()) {
+		throw new Error("Directory is not empty");
+	}
+
+	const templateResponse = await fetch("/web-scad-manifold-template.zip");
+	const templateArrayBuffer = await templateResponse.arrayBuffer();
+
+	await unzipToDirectory(templateArrayBuffer, handle);
+};
+
+async function unzipToDirectory(zip: ArrayBuffer, dirHandle: FileSystemDirectoryHandle) {
+	const buffer = new Uint8Array(zip);
+
+	unzip(buffer, async (err, files) => {
+		if (err) throw err;
+
+		for (const [path, data] of Object.entries(files)) {
+			if (path.endsWith("/")) {
+				await createDirectoryPath(dirHandle, path);
+				continue;
+			}
+
+			const parts = path.split("/");
+			const filename = parts.pop()!;
+			const parent = await createDirectoryPath(
+				dirHandle,
+				parts.join("/"),
+			);
+
+			const handle = await parent.getFileHandle(filename, {
+				create: true,
+			});
+
+			const writable = await handle.createWritable();
+			await writable.write(data);
+			await writable.close();
+		}
+	});
+}
+
+async function createDirectoryPath(root: FileSystemDirectoryHandle, path: string) {
+	let current = root;
+
+	for (const part of path.split("/").filter(Boolean)) {
+		current = await current.getDirectoryHandle(part, {
+			create: true,
+		});
+	}
+
+	return current;
+}
