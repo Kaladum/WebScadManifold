@@ -4,8 +4,8 @@ import { Xml3MfFile } from "./3mfXmlFile";
 
 import { zipSync, Zippable } from "fflate";
 
-const MODEL_PATH = "/3D/3dmodel.model";
-const THUMBNAIL_PATH = "/Metadata/thumbnail.png";
+const MODEL_PATH = "3D/3dmodel.model";
+const THUMBNAIL_PATH = "Metadata/thumbnail.png";
 
 export class File3mf extends Xml3MfFile {
 	public thumbnail?: Uint8Array;
@@ -21,7 +21,7 @@ export class File3mf extends Xml3MfFile {
 			Relationships: {
 				"@_xmlns": "http://schemas.openxmlformats.org/package/2006/relationships",
 				Relationship: [
-					{ "@_Target": MODEL_PATH, "@_Id": "rel-1", "@_Type": "http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel" },
+					{ "@_Target": "/" + MODEL_PATH, "@_Id": "rel-1", "@_Type": "http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel" },
 				],
 			},
 		};
@@ -31,7 +31,7 @@ export class File3mf extends Xml3MfFile {
 		if (this.thumbnail !== undefined) {
 			content[THUMBNAIL_PATH] = [this.thumbnail, { level: 0 }];
 			relationships.Relationships.Relationship.push(
-				{ "@_Target": THUMBNAIL_PATH, "@_Id": "rel-2", "@_Type": "http://schemas.openxmlformats.org/package/2006/relationships/metadata/thumbnail" },
+				{ "@_Target": "/" + THUMBNAIL_PATH, "@_Id": "rel-2", "@_Type": "http://schemas.openxmlformats.org/package/2006/relationships/metadata/thumbnail" },
 			);
 		}
 
