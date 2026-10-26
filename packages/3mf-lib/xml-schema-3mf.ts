@@ -8,20 +8,30 @@ export interface Xml3mf {
 
 export interface Xml3mfMetadata {
 	"@_name": string,
+	"@_preserve"?: boolean,
+	"@_type"?: string,
 	"#text": string,
 };
+
+export interface Xml3mfMetadataGroup {
+	metadata: Xml3mfMetadata[],
+}
 
 export interface Xml3mfModel {
 	"@_unit": Xml3mfUnit,
 	"@_xml:lang": "en-US",
 	"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
 	"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
+	"@_requiredextensions"?: string,
+	"@_recommendedextensions"?: string,
 	metadata: Xml3mfMetadata[],
-	resources: {
-		object?: (Xml3mfMeshObject | Xml3mfComponentObject)[],
-		"m:colorgroup"?: Xml3mfColgroupContent[],
-	},
+	resources: Xml3mfResources,
 	build: Xml3mfBuild,
+}
+
+export interface Xml3mfResources {
+	basematerials?: Xml3mfBasematerial[],
+	object?: (Xml3mfMeshObject | Xml3mfComponentObject)[],
 }
 
 export interface Xml3mfColgroupContent {
@@ -33,8 +43,13 @@ export interface Xml3mfColgroupContent {
 
 interface Xml3mfObjectBase {
 	"@_id": number,
-	"@_type": "model",
+	"@_type"?: Xml3mfObjectType,
+	"@_thumbnail"?: string,
+	"@_partnumber"?: string,
 	"@_name"?: string,
+	"@_pid"?: number,
+	"@_pindex"?: number,
+	metadatagroup?: Xml3mfMetadataGroup,
 }
 
 export interface Xml3mfMeshObject extends Xml3mfObjectBase {
@@ -71,9 +86,11 @@ export interface Xml3mfBuild {
 	item: Xml3mfItem[],
 }
 
-export interface Xml3mfItem { //TODO Remove duplicate
+export interface Xml3mfItem {
 	"@_objectid": number,
 	"@_transform"?: string,
+	"@_partnumber"?: string,
+	metadatagroup?: Xml3mfMetadataGroup,
 }
 
 export interface Xml3mfComponent {
@@ -82,6 +99,8 @@ export interface Xml3mfComponent {
 }
 
 export type Xml3mfUnit = "micron" | "millimeter" | "centimeter" | "inch" | "foot" | "meter";
+
+export type Xml3mfObjectType = "model" | "solidsupport" | "support" | "surface" | "other";
 
 export interface Xml3mfRelationFile {
 	"?xml": {
@@ -96,4 +115,14 @@ export interface Xml3mfRelationFile {
 			"@_Type": string,
 		}[],
 	},
+}
+
+export interface Xml3mfBasematerial {
+	"@_id": number,
+	base: Xml3mfBase[],
+}
+
+export interface Xml3mfBase {
+	"@_name": string,
+	"@_displaycolor": string,
 }
