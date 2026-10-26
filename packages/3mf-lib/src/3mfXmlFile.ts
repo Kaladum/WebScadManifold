@@ -1,5 +1,5 @@
 import XMLBuilder from "fast-xml-builder";
-import { Xml3mf, Xml3mfMeshObject, Xml3mfTriangle, Xml3mfVertex } from "../xml-schema-3mf";
+import { Xml3mf, Xml3mfMeshObject, Xml3mfTriangle, Xml3mfVertex, Xml3mfBasematerial } from "../xml-schema-3mf";
 import { Xml3mfHeader } from "./header";
 import { Child3mf, Component3mf } from "./component";
 
@@ -9,6 +9,7 @@ export class Xml3MfFile {
 	public readonly meshes: Mesh3mf[] = [];
 	public readonly components: Component3mf[] = [];
 	public readonly items: Child3mf[] = [];
+	public readonly basematerials: Xml3mfBasematerial[] = [];
 
 	public generate(): string {
 		const data: Xml3mf = {
@@ -20,6 +21,7 @@ export class Xml3MfFile {
 				"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
 				metadata: this.header.generateMetadata(),
 				resources: {
+					basematerials: this.basematerials,
 					object: [
 						//Mesh objects
 						...this.meshes.map(v => v.generate()),
@@ -43,6 +45,9 @@ export class Xml3MfFile {
 }
 
 export class Mesh3mf {
+	public "@_pid"?: number;
+	public "@_pindex"?: number;
+
 	public constructor(
 		public id: number,
 		public vertices: Float32Array,
@@ -73,6 +78,8 @@ export class Mesh3mf {
 			"@_id": this.id,
 			"@_type": "model",
 			"@_name": this.name,
+			"@_pid": this["@_pid"],
+			"@_pindex": this["@_pindex"],
 			mesh: {
 				vertices: { vertex: xmlVertex },
 				triangles: { triangle: xmlTriangles },
