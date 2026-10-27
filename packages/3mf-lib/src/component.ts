@@ -1,20 +1,21 @@
 import { Xml3mfComponent, Xml3mfComponentObject } from "../xml-schema-3mf";
 import { Mat4, matrix2str } from "./matrix";
+import { Mesh3mf } from "./mesh";
+import type { IdStorage } from "./3mfXmlFile";
 
 export class Component3mf {
 	public constructor(
-		public id: number,
 		public name: string,
 		public children: Child3mf[],
 	) { }
 
-	public generate(): Xml3mfComponentObject {
+	public generate(id: number, idStorage: IdStorage): Xml3mfComponentObject {
 		return {
-			"@_id": this.id,
+			"@_id": id,
 			"@_type": "model",
 			"@_name": this.name,
 			components: {
-				component: this.children.map(v => v.generate()),
+				component: this.children.map(v => v.generate(idStorage)),
 			},
 		};
 	}
@@ -22,13 +23,17 @@ export class Component3mf {
 
 export class Child3mf {
 	public constructor(
-		public objectID: number,
+		public object: Component3mf | Mesh3mf,
 		public transform?: Mat4,
 	) { }
 
-	public generate(): Xml3mfComponent {
+	public generate(idStorage: IdStorage): Xml3mfComponent {
+		const objectID = idStorage.get(this.object);
+		if (objectID === undefined) {
+			throw new Error("Object ID not found in IdStorage");
+		}
 		return {
-			"@_objectid": this.objectID,
+			"@_objectid": objectID,
 			"@_transform": this.transform !== undefined ? matrix2str(this.transform) : undefined,
 		};
 	}

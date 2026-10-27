@@ -1,128 +1,149 @@
-export interface Xml3mf {
-	"?xml": {
-		"@_version": "1.0",
-		"@_encoding": "UTF-8",
-	},
-	model: Xml3mfModel,
-}
+import * as z from "zod";
 
-export interface Xml3mfMetadata {
-	"@_name": string,
-	"@_preserve"?: boolean,
-	"@_type"?: string,
-	"#text": string,
-};
+const Xml3mfUnitSchema = z.enum(["micron", "millimeter", "centimeter", "inch", "foot", "meter"]);
+export type Xml3mfUnit = z.infer<typeof Xml3mfUnitSchema>;
 
-export interface Xml3mfMetadataGroup {
-	metadata: Xml3mfMetadata[],
-}
+const Xml3mfObjectTypeSchema = z.enum(["model", "solidsupport", "support", "surface", "other"]);
+export type Xml3mfObjectType = z.infer<typeof Xml3mfObjectTypeSchema>;
 
-export interface Xml3mfModel {
-	"@_unit": Xml3mfUnit,
-	"@_xml:lang": "en-US",
-	"@_xmlns": "http://schemas.microsoft.com/3dmanufacturing/core/2015/02",
-	"@_xmlns:slic3rpe": "http://schemas.slic3r.org/3mf/2017/06",
-	"@_requiredextensions"?: string,
-	"@_recommendedextensions"?: string,
-	metadata: Xml3mfMetadata[],
-	resources: Xml3mfResources,
-	build: Xml3mfBuild,
-}
+const Xml3mfMetadataSchema = z.object({
+	"@_name": z.string(),
+	"@_preserve": z.boolean().optional(),
+	"@_type": z.string().optional(),
+	"#text": z.string(),
+});
+export type Xml3mfMetadata = z.infer<typeof Xml3mfMetadataSchema>;
 
-export interface Xml3mfResources {
-	basematerials?: Xml3mfBasematerial[],
-	object?: (Xml3mfMeshObject | Xml3mfComponentObject)[],
-}
+const Xml3mfMetadataGroupSchema = z.object({
+	metadata: z.array(Xml3mfMetadataSchema),
+});
+export type Xml3mfMetadataGroup = z.infer<typeof Xml3mfMetadataGroupSchema>;
 
-export interface Xml3mfColgroupContent {
-	"@_id": number,
-	"m:color": {
-		"@_color": string,
-	},
-}
+const Xml3mfObjectBaseSchema = z.object({
+	"@_id": z.number(),
+	"@_type": Xml3mfObjectTypeSchema.optional(),
+	"@_thumbnail": z.string().optional(),
+	"@_partnumber": z.string().optional(),
+	"@_name": z.string().optional(),
+	"@_pid": z.number().optional(),
+	"@_pindex": z.number().optional(),
+	metadatagroup: Xml3mfMetadataGroupSchema.optional(),
+});
 
-interface Xml3mfObjectBase {
-	"@_id": number,
-	"@_type"?: Xml3mfObjectType,
-	"@_thumbnail"?: string,
-	"@_partnumber"?: string,
-	"@_name"?: string,
-	"@_pid"?: number,
-	"@_pindex"?: number,
-	metadatagroup?: Xml3mfMetadataGroup,
-}
+const Xml3mfVertexSchema = z.object({
+	"@_x": z.string(),
+	"@_y": z.string(),
+	"@_z": z.string(),
+});
+export type Xml3mfVertex = z.infer<typeof Xml3mfVertexSchema>;
 
-export interface Xml3mfMeshObject extends Xml3mfObjectBase {
-	mesh: Xml3mfMesh,
-}
+const Xml3mfTriangleSchema = z.object({
+	"@_v1": z.number(),
+	"@_v2": z.number(),
+	"@_v3": z.number(),
+	"@_pid": z.number().optional(),
+	"@_p1": z.number().optional(),
+	"@_p2": z.number().optional(),
+	"@_p3": z.number().optional(),
+});
+export type Xml3mfTriangle = z.infer<typeof Xml3mfTriangleSchema>;
 
-export interface Xml3mfComponentObject extends Xml3mfObjectBase {
-	components: { component: Xml3mfComponent[] },
-}
+export const Xml3mfMeshSchema = z.object({
+	vertices: z.object({
+		vertex: z.array(Xml3mfVertexSchema),
+	}),
+	triangles: z.object({
+		triangle: z.array(Xml3mfTriangleSchema),
+	}),
+});
+export type Xml3mfMesh = z.infer<typeof Xml3mfMeshSchema>;
 
-export interface Xml3mfMesh {
-	vertices: { vertex: Xml3mfVertex[] },
-	triangles: { triangle: Xml3mfTriangle[] },
-}
+const Xml3mfMeshObjectSchema = Xml3mfObjectBaseSchema.extend({
+	mesh: Xml3mfMeshSchema,
+});
+export type Xml3mfMeshObject = z.infer<typeof Xml3mfMeshObjectSchema>;
 
-export interface Xml3mfVertex {
-	"@_x": string,
-	"@_y": string,
-	"@_z": string,
-}
+const Xml3mfComponentSchema = z.object({
+	"@_objectid": z.number(),
+	"@_transform": z.string().optional(),
+});
+export type Xml3mfComponent = z.infer<typeof Xml3mfComponentSchema>;
 
-export interface Xml3mfTriangle {
-	"@_v1": number,
-	"@_v2": number,
-	"@_v3": number,
+const Xml3mfComponentObjectSchema = Xml3mfObjectBaseSchema.extend({
+	components: z.object({
+		component: z.array(Xml3mfComponentSchema),
+	}),
+});
+export type Xml3mfComponentObject = z.infer<typeof Xml3mfComponentObjectSchema>;
 
-	"@_pid"?: number,
-	"@_p1"?: number,
-	"@_p2"?: number,
-	"@_p3"?: number,
-}
+const Xml3mfItemSchema = z.object({
+	"@_objectid": z.number(),
+	"@_transform": z.string().optional(),
+	"@_partnumber": z.string().optional(),
+	metadatagroup: Xml3mfMetadataGroupSchema.optional(),
+});
+export type Xml3mfItem = z.infer<typeof Xml3mfItemSchema>;
 
-export interface Xml3mfBuild {
-	item: Xml3mfItem[],
-}
+export const Xml3mfBuildSchema = z.object({
+	item: z.array(Xml3mfItemSchema),
+});
+export type Xml3mfBuild = z.infer<typeof Xml3mfBuildSchema>;
 
-export interface Xml3mfItem {
-	"@_objectid": number,
-	"@_transform"?: string,
-	"@_partnumber"?: string,
-	metadatagroup?: Xml3mfMetadataGroup,
-}
+const Xml3mfBaseSchema = z.object({
+	"@_name": z.string(),
+	"@_displaycolor": z.string(),//TODO improve
+});
 
-export interface Xml3mfComponent {
-	"@_objectid": number,
-	"@_transform"?: string,
-}
+export type Xml3mfBase = z.infer<typeof Xml3mfBaseSchema>;
 
-export type Xml3mfUnit = "micron" | "millimeter" | "centimeter" | "inch" | "foot" | "meter";
+const Xml3mfBaseMaterialSchema = z.object({
+	"@_id": z.number(),
+	base: z.array(Xml3mfBaseSchema),
+});
 
-export type Xml3mfObjectType = "model" | "solidsupport" | "support" | "surface" | "other";
+export type Xml3mfBaseMaterial = z.infer<typeof Xml3mfBaseMaterialSchema>;
 
-export interface Xml3mfRelationFile {
-	"?xml": {
-		"@_version": "1.0",
-		"@_encoding": "UTF-8",
-	},
-	Relationships: {
-		"@_xmlns": "http://schemas.openxmlformats.org/package/2006/relationships",
-		Relationship: {
-			"@_Target": string,
-			"@_Id": string,
-			"@_Type": string,
-		}[],
-	},
-}
+const Xml3mfResourcesSchema = z.object({
+	basematerials: z.array(Xml3mfBaseMaterialSchema).optional(),
+	object: z.array(z.union([Xml3mfMeshObjectSchema, Xml3mfComponentObjectSchema])).optional(),
+});
+export type Xml3mfResources = z.infer<typeof Xml3mfResourcesSchema>;
 
-export interface Xml3mfBasematerial {
-	"@_id": number,
-	base: Xml3mfBase[],
-}
+const Xml3mfModelSchema = z.object({
+	"@_unit": Xml3mfUnitSchema,
+	"@_xml:lang": z.string(),
+	"@_xmlns": z.literal("http://schemas.microsoft.com/3dmanufacturing/core/2015/02"),
+	"@_xmlns:slic3rpe": z.literal("http://schemas.slic3r.org/3mf/2017/06"),
+	"@_requiredextensions": z.string().optional(),
+	"@_recommendedextensions": z.string().optional(),
+	metadata: z.array(Xml3mfMetadataSchema),
+	resources: Xml3mfResourcesSchema,
+	build: Xml3mfBuildSchema,
+});
+export type Xml3mfModel = z.infer<typeof Xml3mfModelSchema>;
 
-export interface Xml3mfBase {
-	"@_name": string,
-	"@_displaycolor": string,
-}
+export const Xml3mfSchema = z.object({
+	"?xml": z.object({
+		"@_version": z.literal("1.0"),
+		"@_encoding": z.literal("UTF-8"),
+	}),
+	model: Xml3mfModelSchema,
+});
+export type Xml3mf = z.infer<typeof Xml3mfSchema>;
+
+
+export const Xml3mfRelationFileSchema = z.object({
+	"?xml": z.object({
+		"@_version": z.literal("1.0"),
+		"@_encoding": z.literal("UTF-8"),
+	}),
+	Relationships: z.object({
+		"@_xmlns": z.literal("http://schemas.openxmlformats.org/package/2006/relationships"),
+		Relationship: z.array(z.object({
+			"@_Target": z.string(),
+			"@_Id": z.string(),
+			"@_Type": z.string(),
+		})),
+	}),
+});
+export type Xml3mfRelationFile = z.infer<typeof Xml3mfRelationFileSchema>;
