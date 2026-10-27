@@ -3,10 +3,28 @@
 import * as esbuild from "esbuild";
 import http from "node:http";
 import * as fs from "fs/promises";
+import { zipSync } from "fflate";
+import path from "node:path";
+
+/** @param {string} folderPath */
+async function zipFolder(folderPath) {
+	/**@type {Record<string, Uint8Array>} */
+	const content = {};
+	const files = await fs.readdir(folderPath, { withFileTypes: true, recursive: true });
+	for (const file of files) {
+		if (file.isFile()) {
+			const pathRelativeToCDW = path.join(file.parentPath, file.name);
+			const fileContent = await fs.readFile(pathRelativeToCDW);
+			const relativePath = path.relative(folderPath, pathRelativeToCDW);
+			content[relativePath] = fileContent;
+		}
+	}
+	return zipSync(content);
+}
+
 
 const production = process.argv.includes("--production");
 const serve = process.argv.includes("--serve");
-import { archiveFolder } from "zip-lib";
 
 //reset dist
 await fs.rm("./dist", { recursive: true }).catch(() => undefined);
@@ -28,8 +46,8 @@ await fs.copyFile("../packages/web-scad-manifold-lib/node_modules/manifold-3d/ma
 await fs.copyFile("../packages/web-scad-manifold-lib/node_modules/manifold-3d/manifold-global-types.d.ts", "../projectTemplate/types/manifold-3d/manifold-global-types.d.ts");
 await fs.copyFile("../packages/web-scad-manifold-lib/node_modules/manifold-3d/manifold-encapsulated-types.d.ts", "../projectTemplate/types/manifold-3d/manifold-encapsulated-types.d.ts");
 
-//create template zip
-await archiveFolder("../projectTemplate", "./dist/web-scad-manifold-template.zip");
+const zipContent = await zipFolder("../projectTemplate");
+await fs.writeFile("./dist/web-scad-manifold-template.zip", zipContent);
 
 /**
  * @type {esbuild.BuildOptions}
