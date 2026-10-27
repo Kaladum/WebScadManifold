@@ -48,25 +48,30 @@ export function createDirectoryHandleResolverPlugin(dir: FileSystemDirectoryHand
 			build.onLoad({ filter: /.*/ }, async (args: esbuild.OnLoadArgs) => {
 				console.log("Load", args);
 
-				if (args.namespace === USER_VIRTUAL_FS_NAMESPACE) {
+				if (args.namespace === USER_VIRTUAL_FS_NAMESPACE) {//TODO Use correct with type handling
 					const fileHandle: FileSystemFileHandle = args.pluginData;
 					const file = await fileHandle.getFile();
-					const text = await file.text();
+					let content: string | Uint8Array;
 					let loader: esbuild.Loader | undefined;
 					if (args.with.type === "json") {
 						loader = "json";
+						content = await file.text();
 					} else if (args.with.type === "binary") {
 						loader = "binary";
+						content = new Uint8Array(await file.arrayBuffer());
 					} else if (args.with.type === "text") {
 						loader = "text";
+						content = await file.text();
 					} else if (file.name.endsWith(".ts") || file.name.endsWith(".mts")) {
 						loader = "ts";
+						content = await file.text();
 					} else if (file.name.endsWith(".js") || file.name.endsWith(".mjs")) {
 						loader = "js";
+						content = await file.text();
 					} else {
 						throw new Error(`Can't determine loader for file "${file.name}"`);
 					}
-					return { contents: text, loader };
+					return { contents: content, loader };
 				}
 				return undefined;
 			});
