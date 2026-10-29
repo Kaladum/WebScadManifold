@@ -3,4 +3,4 @@ export * from "./vec2";
 export * from "./primitive2d";
 export * from "./boolean2d";
 export * from "./text2d";
-export * from "./matrix";
+export * from "./matrix2d";

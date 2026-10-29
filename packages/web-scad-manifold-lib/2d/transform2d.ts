@@ -1,6 +1,6 @@
 import { Mat3 } from "manifold-3d";
 import { CrossSection } from "../internal/bindings";
-import { Matrix3 } from "./matrix";
+import { Matrix3 } from "./matrix2d";
 import { Object2D } from "./object2d";
 import { AnyVec2, asSimpleVec2, Vec2 } from "./vec2";
 import { union2d } from "./boolean2d";

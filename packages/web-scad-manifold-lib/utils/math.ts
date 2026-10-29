@@ -37,6 +37,14 @@ export const distribute1d = (start: number, end: number, count: number, spaceFro
 
 export const sinDeg = (degrees: number): number => Math.sin(degrees * Math.PI / 180);
 export const cosDeg = (degrees: number): number => Math.cos(degrees * Math.PI / 180);
+export const sinCosDeg = (degrees: number): [number, number] => {
+	const rad = degrees * Math.PI / 180;
+	return [Math.sin(rad), Math.cos(rad)];
+};
 
 export const radToDeg = (radians: number): number => radians * 180 / Math.PI;
 export const degToRad = (degrees: number): number => degrees * Math.PI / 180;
+
+export const clamp = (value: number, min: number, max: number): number => {
+	return Math.min(Math.max(value, min), max);
+};
