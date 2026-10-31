@@ -59,27 +59,26 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 };
 
 export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): readonly [Object3D, Object3D] => {
-	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => [
-		material,
-		manifold.internal.splitByPlane(asSimpleVec3(planeNormal), planeOffset),
-	] as const);
-	const sides = [
-		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[0])]))),
-		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[1])]))),
-	] as const;
-	return sides;
+	const normal = asSimpleVec3(planeNormal);
+	const resultA = new Map<Material, ManifoldGc>();
+	const resultB = new Map<Material, ManifoldGc>();
+	for (const [material, manifold] of current.manifoldsByMaterial) {
+		const [sideA, sideB] = manifold.internal.splitByPlane(normal, planeOffset);
+		resultA.set(material, new ManifoldGc(sideA));
+		resultB.set(material, new ManifoldGc(sideB));
+	}
+	return [new Object3D(resultA), new Object3D(resultB)];
 };
 
 export const splitByObject3d = (current: Object3D, other: Object3D): readonly [Object3D, Object3D] => {
-	const resultManifolds = current.manifoldsByMaterial.entries().map(([material, manifold]) => [
-		material,
-		manifold.internal.split(other.fullManifold.internal),
-	] as const);
-	const sides = [
-		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[0])]))),
-		new Object3D(new Map(resultManifolds.map(([material, sides]) => [material, new ManifoldGc(sides[1])]))),
-	] as const;
-	return sides;
+	const resultA = new Map<Material, ManifoldGc>();
+	const resultB = new Map<Material, ManifoldGc>();
+	for (const [material, manifold] of current.manifoldsByMaterial) {
+		const [sideA, sideB] = manifold.internal.split(other.fullManifold.internal);
+		resultA.set(material, new ManifoldGc(sideA));
+		resultB.set(material, new ManifoldGc(sideB));
+	}
+	return [new Object3D(resultA), new Object3D(resultB)];
 };
 
 export const trimByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): Object3D => {
