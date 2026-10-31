@@ -25,14 +25,14 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public static readonly fromManifoldGc = (manifold: ManifoldGc, material: Material = Material.default) => new Object3D(new Map<Material, ManifoldGc>([[material, manifold]]));
 	public static readonly fromManifold = (manifold: Manifold, material?: Material) => Object3D.fromManifoldGc(new ManifoldGc(manifold), material);
 
-	public static readonly fromMesh = (vertexPositions: Float32Array, indices: Uint32Array): Object3D => {
+	public static readonly fromMesh = (vertexPositions: Float32Array, indices: Uint32Array, material?: Material): Object3D => {
 		const mesh = new Mesh({
 			numProp: 3,
 			vertProperties: vertexPositions,
 			triVerts: indices,
 		});
 
-		return Object3D.fromManifold(new Manifold(mesh));
+		return Object3D.fromManifold(new Manifold(mesh), material);
 	};
 
 	public readonly applyOnEachManifold = (operation: (input: Manifold) => Manifold): Object3D => {
