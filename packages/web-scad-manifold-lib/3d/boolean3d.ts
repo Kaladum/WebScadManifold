@@ -87,11 +87,11 @@ export const trimByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffs
 
 export const applyOnPointUnsafe3d = (current: Object3D, fn: (vec: Vec3) => AnyVec3) => {
 	const result = current.applyOnEachManifold(manifold => manifold.warp(v => {
-		const result = Vec3.from(fn(Vec3.from(v)));
+		const [x, y, z] = asSimpleVec3(fn(Vec3.from(v)));
 		// Apply the result back to the original vector (I don't like mutating in place)
-		v[0] = result.x;
-		v[1] = result.y;
-		v[2] = result.z;
+		v[0] = x;
+		v[1] = y;
+		v[2] = z;
 	}));
 	return result;
 };
