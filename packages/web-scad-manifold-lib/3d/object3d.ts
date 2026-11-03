@@ -3,7 +3,7 @@ import { Manifold, Mesh } from "../internal/bindings";
 import { ManifoldGc } from "../internal/manifoldGc";
 import { Material } from "../material";
 import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByObject3d, splitByPlane3d, trimByPlane3d, union3d } from "./boolean3d";
-import { setMaterial3d } from "./material3d";
+import { replaceMaterial3d, setMaterial3d } from "./material3d";
 import { mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, rotateRepeatX3d, rotateRepeatY3d, rotateRepeatZ3d, rotateX3d, rotateY3d, rotateZ3d, scale3d, translate3d, translateRepeat3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
 import { AnyVec3, Vec3 } from "./vec3";
 
@@ -116,6 +116,7 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly applyOnPointUnsafe = (fn: (vec: Vec3) => AnyVec3) => applyOnPointUnsafe3d(this, fn);
 
 	public readonly setMaterial = (material: Material) => setMaterial3d(this, material);
+	public readonly replaceMaterial = (newMaterial: Material, oldMaterial = Material.default) => replaceMaterial3d(this, newMaterial, oldMaterial);
 }
 
 export class BoundingBox3d {
