@@ -110,8 +110,8 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly intersect = (...others: readonly Object3D[]) => intersect3d(this, ...others);
 
 	public readonly splitByObject = (other: Object3D) => splitByObject3d(this, other);
-	public readonly splitByPlane = (planeNormal: AnyVec3, planeOffset: number) => splitByPlane3d(this, planeNormal, planeOffset);
-	public readonly trimByPlane = (planeNormal: AnyVec3, planeOffset: number) => trimByPlane3d(this, planeNormal, planeOffset);
+	public readonly splitByPlane = (planeNormal: AnyVec3, planeOffset = 0) => splitByPlane3d(this, planeNormal, planeOffset);
+	public readonly trimByPlane = (planeNormal: AnyVec3, planeOffset = 0) => trimByPlane3d(this, planeNormal, planeOffset);
 
 	public readonly applyOnPointUnsafe = (fn: (vec: Vec3) => AnyVec3) => applyOnPointUnsafe3d(this, fn);
 

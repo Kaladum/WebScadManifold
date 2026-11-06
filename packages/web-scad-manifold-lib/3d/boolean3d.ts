@@ -58,7 +58,7 @@ export const decompose3d = (current: Object3D): Object3D[] => {
 	return result;
 };
 
-export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): readonly [Object3D, Object3D] => {
+export const splitByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset = 0): readonly [Object3D, Object3D] => {
 	const normal = asSimpleVec3(planeNormal);
 	const resultA = new Map<Material, ManifoldGc>();
 	const resultB = new Map<Material, ManifoldGc>();
@@ -81,7 +81,7 @@ export const splitByObject3d = (current: Object3D, other: Object3D): readonly [O
 	return [new Object3D(resultA), new Object3D(resultB)];
 };
 
-export const trimByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset: number): Object3D => {
+export const trimByPlane3d = (current: Object3D, planeNormal: AnyVec3, planeOffset = 0): Object3D => {
 	return current.applyOnEachManifold(manifold => manifold.trimByPlane(asSimpleVec3(planeNormal), planeOffset));
 };
 
