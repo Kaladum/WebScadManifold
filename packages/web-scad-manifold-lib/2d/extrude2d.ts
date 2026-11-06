@@ -33,10 +33,22 @@ export const extrudeLinear2d = (current: Object2D, amount = 1, axis: Axis = "Z",
 
 	switch (axis) {
 		case "X":
-			return moved.rotate([0, -90, 0]).mirror([1, 0, 0]);
+			return moved.mapAxis("YZX");
 		case "Y":
-			return moved.rotate([-90, -90, 0]);
+			return moved.mapAxis("XZY");
 		case "Z":
 			return moved;
+	}
+};
+
+export const extrudeRotational2d = (current: Object2D, axis: Axis, circularSections: number, angleDegrees = 360) => {
+	const raw = Object3D.fromManifold(current.crossSection.internal.revolve(circularSections, angleDegrees));
+	switch (axis) {
+		case "X":
+			return raw.mapAxis("YZX");
+		case "Y":
+			return raw.mapAxis("XZY");
+		case "Z":
+			return raw;
 	}
 };

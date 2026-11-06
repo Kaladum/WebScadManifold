@@ -41,13 +41,30 @@ export const rotateRepeat2d = (current: Object2D, rotations: readonly number[]) 
 	return union2d(...rotations.map(rotation => current.rotate(rotation)));
 };
 
+export const rotateCircle2d = (current: Object2D, count: number, offsetItems = 0, offsetDeg = 0) => {
+	return rotateRepeat2d(current, circleRotations(count, offsetItems, offsetDeg));
+};
+
 export const rotateAround2d = (current: Object2D, point: AnyVec2, rotation: number) => {
 	const offset = Vec2.from(point);
 	return current.translate(offset).rotate(rotation).translate(offset.negate());
 };
 
+export const rotateAroundRepeat2d = (current: Object2D, point: AnyVec2, rotations: number[]) => {
+	const offset = Vec2.from(point);
+	return current.translate(offset).rotateRepeat(rotations).translate(offset.negate());
+};
+
 export const mirror2d = (current: Object2D, normal: AnyVec2) => {
 	return current.applyRaw(manifold => manifold.mirror(asSimpleVec2(normal)));
+};
+
+export const mirrorX2d = (current: Object2D) => {
+	return current.applyRaw(manifold => manifold.mirror([1, 0]));
+};
+
+export const mirrorY2d = (current: Object2D) => {
+	return current.applyRaw(manifold => manifold.mirror([0, 1]));
 };
 
 export const mirrorCopy2d = (current: Object2D, normal: AnyVec2) => {
@@ -55,6 +72,9 @@ export const mirrorCopy2d = (current: Object2D, normal: AnyVec2) => {
 		current.mirror(normal),
 	);
 };
+
+export const mirrorCopyX2d = (current: Object2D) => mirrorCopy2d(current, [1, 0]);
+export const mirrorCopyY2d = (current: Object2D) => mirrorCopy2d(current, [0, 1]);
 
 export const scale2d = (current: Object2D, scale: number | AnyVec2) => {
 	const innerScale = typeof scale === "number" ? scale : asSimpleVec2(scale);
@@ -71,4 +91,14 @@ export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
 			}
 		}),
 	));
+};
+
+const circleRotations = (count: number, offsetItems: number, offsetDeg: number) => {
+	const rotations: number[] = [];
+	const degPerItem = 360 / count;
+	for (let i = 0; i < count; i++) {
+		const rotation = (i + offsetItems) * degPerItem + offsetDeg;
+		rotations.push(rotation);
+	}
+	return rotations;
 };

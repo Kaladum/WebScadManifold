@@ -1,5 +1,6 @@
 import { Manifold } from "../internal/bindings";
 import { union3d } from "./boolean3d";
+import { Matrix4, Matrix4Raw } from "./matrix3d";
 import { Object3D } from "./object3d";
 import { AnyVec3, asSimpleVec3, Vec3 } from "./vec3";
 
@@ -59,12 +60,24 @@ export const rotateRepeatX3d = (current: Object3D, rotations: readonly number[])
 	return union3d(...rotations.map(rotation => current.rotateX(rotation)));
 };
 
+export const rotateRepeatCircleX3d = (current: Object3D, count: number, offsetItems = 0, offsetDeg = 0) => {
+	return rotateRepeatX3d(current, circleRotations(count, offsetItems, offsetDeg));
+};
+
 export const rotateRepeatY3d = (current: Object3D, rotations: readonly number[]) => {
 	return union3d(...rotations.map(rotation => current.rotateY(rotation)));
 };
 
+export const rotateRepeatCircleY3d = (current: Object3D, count: number, offsetItems = 0, offsetDeg = 0) => {
+	return rotateRepeatY3d(current, circleRotations(count, offsetItems, offsetDeg));
+};
+
 export const rotateRepeatZ3d = (current: Object3D, rotations: readonly number[]) => {
 	return union3d(...rotations.map(rotation => current.rotateZ(rotation)));
+};
+
+export const rotateRepeatCircleZ3d = (current: Object3D, count: number, offsetItems = 0, offsetDeg = 0) => {
+	return rotateRepeatZ3d(current, circleRotations(count, offsetItems, offsetDeg));
 };
 
 export const rotateAround3d = (current: Object3D, point: AnyVec3, rotation: AnyVec3) => {
@@ -97,6 +110,38 @@ export const hull3d = (contents: readonly (Object3D | AnyVec3)[]): Object3D => {
 			}
 		}),
 	));
+};
+
+export const transform3d = (current: Object3D, matrix: Matrix4) => {
+	return current.applyOnEachManifold(manifold => manifold.transform(matrix.columnMajor()));
+};
+
+export type AxisOrder = "XYZ" | "XZY" | "YXZ" | "YZX" | "ZXY" | "ZYX";
+
+export const mapAxis3d = (current: Object3D, order: AxisOrder) => {
+	const indexMap: Record<string, number> = { X: 0, Y: 1, Z: 2 };
+	const matrix: Matrix4Raw = [
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 1],
+	];
+	for (let i = 0; i < 3; i++) {
+		const axis = order[i];
+		const index = indexMap[axis];
+		matrix[i][index] = 1;
+	}
+	return transform3d(current, new Matrix4(matrix));
+};
+
+const circleRotations = (count: number, offsetItems: number, offsetDeg: number) => {
+	const rotations: number[] = [];
+	const degPerItem = 360 / count;
+	for (let i = 0; i < count; i++) {
+		const rotation = (i + offsetItems) * degPerItem + offsetDeg;
+		rotations.push(rotation);
+	}
+	return rotations;
 };
 
 //TODO project, slice, translate(mat4), revolve
