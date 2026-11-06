@@ -1,12 +1,14 @@
 import { AnyVec3, asSimpleVec3, Vec3 } from "./vec3";
 import { sinCosDeg } from "../utils/math";
 
-type Matrix4Column = readonly [number, number, number, number];
-export type Matrix4Raw = readonly [Matrix4Column, Matrix4Column, Matrix4Column, Matrix4Column];
+export type Matrix4Column = [number, number, number, number];
+export type Matrix4ColumnReadonly = readonly [number, number, number, number];
+export type Matrix4Raw = [Matrix4Column, Matrix4Column, Matrix4Column, Matrix4Column];
+export type Matrix4RawReadonly = readonly [Matrix4ColumnReadonly, Matrix4ColumnReadonly, Matrix4ColumnReadonly, Matrix4ColumnReadonly];
 
 /**This stores a 4*4 matrix in column major order*/
 export class Matrix4 {
-	public constructor(public readonly values: Matrix4Raw) { }
+	public constructor(public readonly values: Matrix4RawReadonly) { }
 
 	public static readonly identity = new Matrix4([
 		[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1],
@@ -117,5 +119,15 @@ export class Matrix4 {
 		const ny = v[0][1] * x + v[1][1] * y + v[2][1] * z + v[3][1];
 		const nz = v[0][2] * x + v[1][2] * y + v[2][2] * z + v[3][2];
 		return new Vec3(nx, ny, nz);
+	};
+
+	public columnMajor = (): [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number] => {
+		const v = this.values;
+		return [
+			v[0][0], v[0][1], v[0][2], v[0][3],
+			v[1][0], v[1][1], v[1][2], v[1][3],
+			v[2][0], v[2][1], v[2][2], v[2][3],
+			v[3][0], v[3][1], v[3][2], v[3][3],
+		];
 	};
 }
