@@ -47,6 +47,8 @@ export class Vec2 {
 	public static fromAToB(a: Vec2, b: Vec2): Vec2 {
 		return new Vec2(b.x - a.x, b.y - a.y);
 	}
+
+	public toString = () => `Vec2(x: ${this.x}, y: ${this.y})`;
 }
 
 export type AnyVec2 = SimpleVec2 | Vec2;

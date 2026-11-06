@@ -138,4 +138,6 @@ export class BoundingBox3d {
 		const size = this.size();
 		return size.x * size.y * size.z;
 	}
+
+	public toString = () => `BoundingBox3d(min: ${this.min.toString()}, max: ${this.max.toString()}, size: ${this.size().toString()})`;
 }

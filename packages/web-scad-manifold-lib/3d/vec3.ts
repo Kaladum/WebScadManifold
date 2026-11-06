@@ -51,6 +51,8 @@ export class Vec3 {
 			a.z + (b.z - a.z) * t,
 		);
 	}
+
+	public toString = () => `Vec3(x: ${this.x}, y: ${this.y}, z: ${this.z})`;
 }
 
 export type AnyVec3 = SimpleVec3 | Vec3;

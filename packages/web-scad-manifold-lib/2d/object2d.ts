@@ -84,4 +84,5 @@ export class Rect2d {
 		const size = this.size();
 		return size.x * size.y;
 	}
+	public toString = () => `Rect2d(min: ${this.min.toString()}, max: ${this.max.toString()}, size: ${this.size().toString()})`;
 }
