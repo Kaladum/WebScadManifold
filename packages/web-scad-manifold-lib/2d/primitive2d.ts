@@ -4,3 +4,4 @@ import { AnyVec2, asSimpleVec2 } from "./vec2";
 
 export const square = (size?: AnyVec2, center?: boolean) => Object2D.fromCrossSection(CrossSection.square(asSimpleVec2(size ?? [1, 1]), center));
 export const circle = (radius = 1, circularSegments?: number) => Object2D.fromCrossSection(CrossSection.circle(radius, circularSegments));
+export const ring = (outerRadius = 2, innerRadius = 1, circularSegments?: number) => circle(outerRadius, circularSegments).subtract(circle(innerRadius, circularSegments));

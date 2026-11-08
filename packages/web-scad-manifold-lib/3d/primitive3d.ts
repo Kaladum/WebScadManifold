@@ -1,4 +1,4 @@
-import { circle } from "../2d";
+import { circle, ring } from "../2d";
 import { Manifold } from "../internal/bindings";
 import { Object3D } from "./object3d";
 import { AnyVec3, asSimpleVec3 } from "./vec3";
@@ -8,3 +8,4 @@ export const sphere = (radius: number, circularSegments?: number) => Object3D.fr
 export const tetrahedron = () => Object3D.fromManifold(Manifold.tetrahedron());
 
 export const cylinder = (radius = 1, height = 1, circularSegments?: number) => circle(radius, circularSegments).extrude(height);
+export const hollowCylinder = (outerRadius = 2, innerRadius = 1, height = 1, circularSegments?: number) => ring(outerRadius, innerRadius, circularSegments).extrude(height);
