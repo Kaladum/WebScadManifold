@@ -22,7 +22,8 @@ export class Object2D {
 
 	public static fromPolygons(polygons: readonly (readonly AnyVec2[])[], fillRule?: FillRule): Object2D {
 		const data = polygons.map(p => p.map(v => asSimpleVec2(v) as [number, number]));//TODO enable readonly Vec in Manifold
-		const crossSection = new CrossSection(data, fillRule);
+		const crossSection = CrossSection.ofPolygons(data, fillRule);
+		if (crossSection.isEmpty()) throw new Error("The resulting cross section is empty. Check the fill rule and the vertex orientation.");
 		return Object2D.fromCrossSection(crossSection);
 	}
 
