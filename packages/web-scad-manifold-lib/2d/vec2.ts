@@ -37,6 +37,8 @@ export class Vec2 {
 		return new Vec2(this.x / length, this.y / length);
 	};
 
+	public getAxis = (axis: "X" | "Y"): number => axis === "X" ? this.x : this.y;
+
 	public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {
 		return new Vec2(
 			a.x + (b.x - a.x) * t,
@@ -46,6 +48,10 @@ export class Vec2 {
 
 	public static fromAToB(a: Vec2, b: Vec2): Vec2 {
 		return new Vec2(b.x - a.x, b.y - a.y);
+	}
+
+	public static axisValue(value: number, axis: "X" | "Y"): Vec2 {
+		return axis === "X" ? new Vec2(value, 0) : new Vec2(0, value);
 	}
 
 	public toString = () => `Vec2(x: ${this.x}, y: ${this.y})`;

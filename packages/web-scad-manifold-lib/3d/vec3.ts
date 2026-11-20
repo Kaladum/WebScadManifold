@@ -32,6 +32,12 @@ export class Vec3 {
 		return new Vec3(this.x / length, this.y / length, this.z / length);
 	};
 
+	public getAxis = (axis: "X" | "Y" | "Z"): number => axis === "X" ? this.x : axis === "Y" ? this.y : this.z;
+
+	public static axisValue(value: number, axis: "X" | "Y" | "Z"): Vec3 {
+		return axis === "X" ? new Vec3(value, 0, 0) : axis === "Y" ? new Vec3(0, value, 0) : new Vec3(0, 0, value);
+	}
+
 	public static fromAToB(a: Vec3, b: Vec3): Vec3 {
 		return new Vec3(b.x - a.x, b.y - a.y, b.z - a.z);
 	}
