@@ -24,12 +24,11 @@ You can use this project directly in the
 - [x] Async Code
 - [x] Data Import
 - [x] Multi Material Support
+- [x] 3FM Model import (currently ignoring metadata and colors)
 - [ ] NPM publication
 - [ ] Command Line usage
 - [ ] Support for additional libraries
 - [ ] Animations
 - [ ] STL Export
-- [ ] Additional export formats
-- [ ] 3FM Model import
-- [ ] STL Model import
+- [ ] STL Import
 - [ ] Better UI Tools (Grid / Measure Tools)
