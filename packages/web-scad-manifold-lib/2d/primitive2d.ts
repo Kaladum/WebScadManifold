@@ -22,3 +22,5 @@ export const outerArc = (outerRadius = 2, innerRadius = 1, startAngle = 0, endAn
 	const inner = circle(innerRadius, circularSegments);
 	return outer.subtract(inner);
 };
+
+export const triangle = (p1: AnyVec2, p2: AnyVec2, p3: AnyVec2) => Object2D.fromPolygon([p1, p2, p3]);
