@@ -10,6 +10,7 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "3mf-lib": "*",
     "manifold-3d": "^3.5.5",
     "opentype.js": "^2.0.0"
   },

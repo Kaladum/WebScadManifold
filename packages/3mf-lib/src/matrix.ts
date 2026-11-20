@@ -17,3 +17,14 @@ export type Mat4 = readonly [
  * @return string transform attribute value
 */
 export const matrix2str = (m: Mat4) => `${m[0]} ${m[1]} ${m[2]} ${m[4]} ${m[5]} ${m[6]} ${m[8]} ${m[9]} ${m[10]} ${m[12]} ${m[13]} ${m[14]}`;
+
+export const str2matrix = (s: string): Mat4 => {
+	const values = s.split(" ").map(parseFloat);
+	if (values.length !== 12) throw new Error("Invalid matrix string");
+	return [
+		values[0], values[1], values[2], 0,
+		values[3], values[4], values[5], 0,
+		values[6], values[7], values[8], 0,
+		values[9], values[10], values[11], 1,
+	];
+};

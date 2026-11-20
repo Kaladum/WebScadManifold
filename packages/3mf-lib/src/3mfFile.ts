@@ -1,8 +1,9 @@
 import XMLBuilder from "fast-xml-builder";
-import { Xml3mfRelationFile } from "../xml-schema-3mf";
+import { Xml3mfRelationFile, Xml3mfRelationFileSchema } from "../xml-schema-3mf";
 import { Xml3MfFile } from "./3mfXmlFile";
 
-import { zipSync, Zippable } from "fflate";
+import { zipSync, unzipSync, Zippable } from "fflate";
+import { XMLParser } from "fast-xml-parser";
 
 const MODEL_PATH = "3D/3dmodel.model";
 const THUMBNAIL_PATH = "Metadata/thumbnail.png";
@@ -39,6 +40,37 @@ export class File3mf extends Xml3MfFile {
 		content["_rels/.rels"] = [utf8Encoder.encode(relationshipsXmlBuilder.build(relationships)), { level: 8 }];
 
 		return zipSync(content);
+	}
+
+	public static load(data: Uint8Array) {
+		const zipContent = unzipSync(data, { filter: (_) => true });
+		const parser = new XMLParser({ ignoreAttributes: false });
+
+		const relationshipsXml = zipContent["_rels/.rels"];
+		if (!relationshipsXml) {
+			throw new Error("Missing relationships file");
+		}
+
+		const relationshipsParsed = parser.parse(relationshipsXml);
+		const relationships = Xml3mfRelationFileSchema.parse(relationshipsParsed);
+
+		let modelPath = MODEL_PATH;
+		{
+			const modelRel = relationships.Relationships.Relationship.find((rel) => rel["@_Type"] === "http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel");
+			if (modelRel) {
+				modelPath = modelRel["@_Target"].replace(/^\//, "");
+			}
+		}
+
+		const modelContentBytes = zipContent[modelPath];
+		if (!modelContentBytes) {
+			throw new Error("Missing model file");
+		}
+		const modelXml = new TextDecoder().decode(modelContentBytes);
+
+		const result = new Xml3MfFile();
+		result.loadXml(modelXml);
+		return result;
 	}
 }
 

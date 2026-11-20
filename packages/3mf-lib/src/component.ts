@@ -5,7 +5,7 @@ import type { IdStorage } from "./3mfXmlFile";
 
 export class Component3mf {
 	public constructor(
-		public name: string,
+		public name: string | undefined,
 		public children: Child3mf[],
 	) { }
 
