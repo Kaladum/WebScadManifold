@@ -1,4 +1,5 @@
 import { Manifold } from "../internal/bindings";
+import { range } from "../utils/math";
 import { union3d } from "./boolean3d";
 import { Matrix4, Matrix4Raw } from "./matrix3d";
 import { Object3D } from "./object3d";
@@ -34,6 +35,18 @@ export const translateRepeatY3d = (current: Object3D, offsets: readonly number[]
 
 export const translateRepeatZ3d = (current: Object3D, offsets: readonly number[]) => {
 	return union3d(...offsets.map(offset => current.translateZ(offset)));
+};
+
+export const translateRepeatCountX3d = (current: Object3D, count: number, distance: number) => {
+	return translateRepeatX3d(current, range(0, count).map(i => i * distance));
+};
+
+export const translateRepeatCountY3d = (current: Object3D, count: number, distance: number) => {
+	return translateRepeatY3d(current, range(0, count).map(i => i * distance));
+};
+
+export const translateRepeatCountZ3d = (current: Object3D, count: number, distance: number) => {
+	return translateRepeatZ3d(current, range(0, count).map(i => i * distance));
 };
 
 export const rotate3d = (current: Object3D, rotation: AnyVec3) => {
@@ -100,6 +113,10 @@ export const scale3d = (current: Object3D, scale: number | AnyVec3) => {
 	return current.applyOnEachManifold(manifold => manifold.scale(innerScale));
 };
 
+export const scaleX3d = (current: Object3D, scale: number) => scale3d(current, [scale, 1, 1]);
+export const scaleY3d = (current: Object3D, scale: number) => scale3d(current, [1, scale, 1]);
+export const scaleZ3d = (current: Object3D, scale: number) => scale3d(current, [1, 1, scale]);
+
 export const hull3d = (contents: readonly (Object3D | AnyVec3)[]): Object3D => {
 	return Object3D.fromManifold(Manifold.hull(
 		contents.map(v => {
@@ -144,4 +161,4 @@ const circleRotations = (count: number, offsetItems: number, offsetDeg: number) 
 	return rotations;
 };
 
-//TODO project, slice, translate(mat4), revolve
+//TODO project, slice

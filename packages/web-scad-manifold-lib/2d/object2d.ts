@@ -4,7 +4,7 @@ import { Axis } from "../utils/math";
 import { decompose2d, difference2d, intersect2d, union2d } from "./boolean2d";
 import { extrude2d, extrudeLinear2d, extrudeRotational2d } from "./extrude2d";
 import { Matrix3 } from "./matrix2d";
-import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d, translateRepeatY2d, translateRepeatX2d, rotateAroundRepeat2d, mirrorCopyX2d, mirrorY2d, mirrorX2d, mirrorCopyY2d, rotateCircle2d } from "./transform2d";
+import { mirror2d, mirrorCopy2d, rotate2d, scale2d, transform2d, translate2d, translateX2d, translateY2d, translateRepeat2d, rotateRepeat2d, rotateAround2d, translateRepeatY2d, translateRepeatX2d, rotateAroundRepeat2d, mirrorCopyX2d, mirrorY2d, mirrorX2d, mirrorCopyY2d, rotateCircle2d, translateRepeatCountX2d, translateRepeatCountY2d, scaleY2d, scaleX2d } from "./transform2d";
 import { AnyVec2, asSimpleVec2, Vec2 } from "./vec2";
 
 export type FillRule = "EvenOdd" | "NonZero" | "Positive" | "Negative";
@@ -47,6 +47,9 @@ export class Object2D {
 	public readonly translateRepeat = (offsets: readonly AnyVec2[]) => translateRepeat2d(this, offsets);
 	public readonly translateRepeatX = (offsets: readonly number[]) => translateRepeatX2d(this, offsets);
 	public readonly translateRepeatY = (offsets: readonly number[]) => translateRepeatY2d(this, offsets);
+	public readonly translateRepeatCountX = (count: number, distance: number) => translateRepeatCountX2d(this, count, distance);
+	public readonly translateRepeatCountY = (count: number, distance: number) => translateRepeatCountY2d(this, count, distance);
+
 	public readonly rotate = (rotation: number) => rotate2d(this, rotation);
 	public readonly rotateRepeat = (rotations: readonly number[]) => rotateRepeat2d(this, rotations);
 	public readonly rotateCircle = (count: number, offsetItems?: number, offsetDeg?: number) => rotateCircle2d(this, count, offsetItems, offsetDeg);
@@ -59,6 +62,8 @@ export class Object2D {
 	public readonly mirrorCopyX = () => mirrorCopyX2d(this);
 	public readonly mirrorCopyY = () => mirrorCopyY2d(this);
 	public readonly scale = (scale: number | AnyVec2) => scale2d(this, scale);
+	public readonly scaleX = (scale: number) => scaleX2d(this, scale);
+	public readonly scaleY = (scale: number) => scaleY2d(this, scale);
 
 	public readonly difference = (...others: readonly Object2D[]) => difference2d(this, ...others);
 	public readonly subtract = (...others: readonly Object2D[]) => this.difference(...others);

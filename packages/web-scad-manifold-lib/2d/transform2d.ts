@@ -4,6 +4,7 @@ import { Matrix3 } from "./matrix2d";
 import { Object2D } from "./object2d";
 import { AnyVec2, asSimpleVec2, Vec2 } from "./vec2";
 import { union2d } from "./boolean2d";
+import { range } from "../utils/math";
 
 export const transform2d = (current: Object2D, matrix: Matrix3) => {
 	return current.applyRaw(manifold => manifold.transform(matrix.values.flatMap(v => v) as Mat3));
@@ -33,6 +34,14 @@ export const translateRepeatY2d = (current: Object2D, offsets: readonly number[]
 	return union2d(...offsets.map(offset => current.translateY(offset)));
 };
 
+export const translateRepeatCountX2d = (current: Object2D, count: number, distance: number) => {
+	return translateRepeatX2d(current, range(0, count).map(i => i * distance));
+};
+
+export const translateRepeatCountY2d = (current: Object2D, count: number, distance: number) => {
+	return translateRepeatY2d(current, range(0, count).map(i => i * distance));
+};
+
 export const rotate2d = (current: Object2D, rotation: number) => {
 	return current.applyRaw(manifold => manifold.rotate(rotation));
 };
@@ -42,7 +51,7 @@ export const rotateRepeat2d = (current: Object2D, rotations: readonly number[]) 
 };
 
 export const rotateCircle2d = (current: Object2D, count: number, offsetItems = 0, offsetDeg = 0) => {
-	return rotateRepeat2d(current, circleRotations(count, offsetItems, offsetDeg));
+	return rotateRepeat2d(current, distributeAnglesAcrossCircle(count, offsetItems, offsetDeg));
 };
 
 export const rotateAround2d = (current: Object2D, point: AnyVec2, rotation: number) => {
@@ -81,6 +90,9 @@ export const scale2d = (current: Object2D, scale: number | AnyVec2) => {
 	return current.applyRaw(manifold => manifold.scale(innerScale));
 };
 
+export const scaleX2d = (current: Object2D, scale: number) => scale2d(current, [scale, 1]);
+export const scaleY2d = (current: Object2D, scale: number) => scale2d(current, [1, scale]);
+
 export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
 	return Object2D.fromCrossSection(CrossSection.hull(
 		contents.map(v => {
@@ -93,7 +105,7 @@ export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
 	));
 };
 
-const circleRotations = (count: number, offsetItems: number, offsetDeg: number) => {
+const distributeAnglesAcrossCircle = (count: number, offsetItems: number, offsetDeg: number) => {
 	const rotations: number[] = [];
 	const degPerItem = 360 / count;
 	for (let i = 0; i < count; i++) {

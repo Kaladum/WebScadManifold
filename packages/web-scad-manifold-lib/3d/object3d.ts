@@ -5,7 +5,7 @@ import { Material } from "../material";
 import { applyOnPointUnsafe3d, difference3d, intersect3d, splitByObject3d, splitByPlane3d, trimByPlane3d, union3d } from "./boolean3d";
 import { replaceMaterial3d, setMaterial3d } from "./material3d";
 import { Matrix4 } from "./matrix3d";
-import { AxisOrder, mapAxis3d, mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, rotateRepeatCircleX3d, rotateRepeatCircleY3d, rotateRepeatCircleZ3d, rotateRepeatX3d, rotateRepeatY3d, rotateRepeatZ3d, rotateX3d, rotateY3d, rotateZ3d, scale3d, transform3d, translate3d, translateRepeat3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
+import { AxisOrder, mapAxis3d, mirror3d, mirrorCopy3d, rotate3d, rotateAround3d, rotateRepeat3d, rotateRepeatCircleX3d, rotateRepeatCircleY3d, rotateRepeatCircleZ3d, rotateRepeatX3d, rotateRepeatY3d, rotateRepeatZ3d, rotateX3d, rotateY3d, rotateZ3d, scale3d, scaleX3d, scaleY3d, scaleZ3d, transform3d, translate3d, translateRepeat3d, translateRepeatCountX3d, translateRepeatCountY3d, translateRepeatCountZ3d, translateRepeatX3d, translateRepeatY3d, translateRepeatZ3d, translateX3d, translateY3d, translateZ3d } from "./transform3d";
 import { AnyVec3, Vec3 } from "./vec3";
 
 export class Object3D implements WebScadExportable<WebScadObject> {
@@ -86,8 +86,11 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 
 	public readonly translateRepeat = (offsets: readonly AnyVec3[]) => translateRepeat3d(this, offsets);
 	public readonly translateRepeatX = (offsets: readonly number[]) => translateRepeatX3d(this, offsets);
+	public readonly translateRepeatCountX = (count: number, distance: number) => translateRepeatCountX3d(this, count, distance);
 	public readonly translateRepeatY = (offsets: readonly number[]) => translateRepeatY3d(this, offsets);
+	public readonly translateRepeatCountY = (count: number, distance: number) => translateRepeatCountY3d(this, count, distance);
 	public readonly translateRepeatZ = (offsets: readonly number[]) => translateRepeatZ3d(this, offsets);
+	public readonly translateRepeatCountZ = (count: number, distance: number) => translateRepeatCountZ3d(this, count, distance);
 
 	public readonly transform = (matrix: Matrix4) => transform3d(this, matrix);
 
@@ -109,7 +112,11 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 	public readonly rotateAround = (point: AnyVec3, rotation: AnyVec3) => rotateAround3d(this, point, rotation);
 	public readonly mirror = (normal: AnyVec3) => mirror3d(this, normal);
 	public readonly mirrorCopy = (normal: AnyVec3) => mirrorCopy3d(this, normal);
+
 	public readonly scale = (scale: number | AnyVec3) => scale3d(this, scale);
+	public readonly scaleX = (scale: number) => scaleX3d(this, scale);
+	public readonly scaleY = (scale: number) => scaleY3d(this, scale);
+	public readonly scaleZ = (scale: number) => scaleZ3d(this, scale);
 
 	public readonly difference = (...others: readonly Object3D[]) => difference3d(this, ...others);
 	public readonly subtract = (...others: readonly Object3D[]) => this.difference(...others);
