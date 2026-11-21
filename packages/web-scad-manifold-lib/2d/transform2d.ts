@@ -35,10 +35,16 @@ export const translateRepeatY2d = (current: Object2D, offsets: readonly number[]
 };
 
 export const translateRepeatCountX2d = (current: Object2D, count: number, distance: number) => {
+	if (count < 0) throw new Error("Count must be non-negative");
+	if (count === 0) return Object2D.empty;
+	if (count === 1) return current;
 	return translateRepeatX2d(current, range(0, count).map(i => i * distance));
 };
 
 export const translateRepeatCountY2d = (current: Object2D, count: number, distance: number) => {
+	if (count < 0) throw new Error("Count must be non-negative");
+	if (count === 0) return Object2D.empty;
+	if (count === 1) return current;
 	return translateRepeatY2d(current, range(0, count).map(i => i * distance));
 };
 
@@ -106,6 +112,7 @@ export const hull2d = (contents: readonly (Object2D | AnyVec2)[]): Object2D => {
 };
 
 const distributeAnglesAcrossCircle = (count: number, offsetItems: number, offsetDeg: number) => {
+	if (count < 0) throw new Error("Count must be non-negative");
 	const rotations: number[] = [];
 	const degPerItem = 360 / count;
 	for (let i = 0; i < count; i++) {

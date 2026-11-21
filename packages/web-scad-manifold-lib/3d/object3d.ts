@@ -132,6 +132,8 @@ export class Object3D implements WebScadExportable<WebScadObject> {
 
 	public readonly setMaterial = (material: Material) => setMaterial3d(this, material);
 	public readonly replaceMaterial = (newMaterial: Material, oldMaterial = Material.default) => replaceMaterial3d(this, newMaterial, oldMaterial);
+
+	public static readonly empty = Object3D.fromMesh(new Float32Array(), new Uint32Array());
 }
 
 export class BoundingBox3d {

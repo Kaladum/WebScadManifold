@@ -5,6 +5,7 @@ import { Object3D } from "./object3d";
 import { AnyVec3, asSimpleVec3, Vec3 } from "./vec3";
 
 export const difference3d = (current: Object3D, ...others: readonly Object3D[]) => {
+	if (others.length === 0) return current;
 	const allCutAwayManifolds = others.map(v => v.fullManifold.internal);
 	const cutAway = Manifold.union(allCutAwayManifolds);
 
@@ -14,6 +15,8 @@ export const difference3d = (current: Object3D, ...others: readonly Object3D[]) 
 };
 
 export const union3d = (...items: readonly Object3D[]) => {
+	if (items.length === 0) return Object3D.empty;
+	if (items.length === 1) return items[0];
 	const resultByMaterial = new Map<Material, ManifoldGc>();
 
 	for (const obj of items) {
@@ -35,7 +38,6 @@ export const union3d = (...items: readonly Object3D[]) => {
 
 export const autoUnion3d = (value: Object3D | readonly Object3D[]) => {
 	if (value instanceof Array) {
-		if (value.length === 0) return value[0];
 		return union3d(...value);
 	} else {
 		return value;
@@ -43,6 +45,7 @@ export const autoUnion3d = (value: Object3D | readonly Object3D[]) => {
 };
 
 export const intersect3d = (current: Object3D, ...others: readonly Object3D[]) => {
+	if (others.length === 0) return current;
 	const finalShape = Manifold.intersection([current, ...others].map(v => v.fullManifold.internal));
 	const result = current.applyOnEachManifold(manifold => manifold.intersect(finalShape));
 	finalShape.delete();

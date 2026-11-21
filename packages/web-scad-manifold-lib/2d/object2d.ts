@@ -16,14 +16,14 @@ export class Object2D {
 
 	public static fromCrossSection = (crossSection: CrossSection) => new Object2D(new CrossSectionGc(crossSection));
 
-	public static fromPolygon(polygon: readonly AnyVec2[], fillRule?: FillRule): Object2D {
-		return Object2D.fromPolygons([polygon], fillRule);
+	public static fromPolygon(polygon: readonly AnyVec2[], fillRule?: FillRule, ignoreIsEmpty = false): Object2D {
+		return Object2D.fromPolygons([polygon], fillRule, ignoreIsEmpty);
 	}
 
-	public static fromPolygons(polygons: readonly (readonly AnyVec2[])[], fillRule?: FillRule): Object2D {
+	public static fromPolygons(polygons: readonly (readonly AnyVec2[])[], fillRule?: FillRule, ignoreIsEmpty = false): Object2D {
 		const data = polygons.map(p => p.map(v => asSimpleVec2(v) as [number, number]));//TODO enable readonly Vec in Manifold
 		const crossSection = CrossSection.ofPolygons(data, fillRule);
-		if (crossSection.isEmpty()) throw new Error("The resulting cross section is empty. Check the fill rule and the vertex orientation.");
+		if (crossSection.isEmpty() && !ignoreIsEmpty) throw new Error("The resulting cross section is empty. Check the fill rule and the vertex orientation.");
 		return Object2D.fromCrossSection(crossSection);
 	}
 
@@ -76,6 +76,8 @@ export class Object2D {
 	public readonly extrude = (height: number, nDivisions?: number, twistDegrees?: number, scaleTop?: AnyVec2 | number, center?: boolean) => extrude2d(this, height, nDivisions, twistDegrees, scaleTop, center);
 	public readonly extrudeLinear = (amount = 1, axis: Axis = "Z", direction: "+" | "-" | "+-" = "+") => extrudeLinear2d(this, amount, axis, direction);
 	public readonly extrudeRotational = (axis: Axis, circularSections: number, angleDegrees = 360) => extrudeRotational2d(this, axis, circularSections, angleDegrees);
+
+	public static readonly empty = Object2D.fromPolygon([], undefined, true);
 }
 
 export class Rect2d {
